@@ -5,6 +5,8 @@ function [xidot,F]=vehicle(t,xi,u,d,th)
 % front wheel steering angle. Partial de-coupling of longitudinal and
 % lateral dynamics (assume longitudinal speed varies slowly with respect to
 % lateral dynamics)
+
+hdtfygkhjjgjjkj
 %
 % Inputs:   t       (time - for use with ode45)
 %           xi      (model state)
