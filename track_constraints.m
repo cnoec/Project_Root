@@ -1,4 +1,3 @@
-
 function inside_track = track_constraints(target_position,N,innerBoundary,outerBoundary)
 
 % constraint function h(x)>=0. It checks whether or not the target position
