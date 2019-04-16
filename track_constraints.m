@@ -1,9 +1,10 @@
-function inside_track = track_constraints(target_position,N,innerBoundary,outerBoundary)
+function inside_track = track_constraints(x_target,y_target,N,innerBoundary,outerBoundary)
 
 % constraint function h(x)>=0. It checks whether or not the target position
 % is inside the track and if it is feasible, by returning 1 or -1. 
 %
-% Inputs:   target_position     -   column vector 2x1 [ x y ]' 
+% Inputs:   x_target            -   coordiate x of target position
+%           y_target            -   coordinate y of target position
 %           N                   -   number of boundary samples
 %           innerBoundary       -   matrix Nx3 - it contains the x,y,z
 %                                   coordinates of the inner boundary
@@ -16,8 +17,6 @@ function inside_track = track_constraints(target_position,N,innerBoundary,outerB
 %                                   if -1 -> target position outside track
 
 % initialization of variables 
-x = target_position(1);
-y = target_position(2);
 inside_track = 0;
 
 % for-cycle
@@ -52,8 +51,8 @@ for i = 1:N
    % at the end of the for-cycle, if the target position is feasible, the
    % inside_track variable will be greater than zero. else, the target
    % position is not feasible
-   if (x >= x_in && x <= x_out)
-     if (y >= y_in && y <= y_out)
+   if (x_target >= x_in && x_target <= x_out)
+     if (y_target >= y_in && y_target <= y_out)
        inside_track = inside_track + 1;
      end
    end
@@ -62,8 +61,6 @@ end
 % output variable setting
 if inside_track >= 1
     inside_track = 1;
-    plot(x,y,'*r')
-    pause(.001)
 else 
     inside_track = -1;
 end

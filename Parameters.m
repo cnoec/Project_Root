@@ -17,6 +17,5 @@ Al      =       3.2;                % vehicle lateral surface (m^2)
 Cx      =       0.4;                % vehicle front aerodynamic drag coefficient
 Rr      =       0.016*m*9.81/30;    % rolling resistance coefficient(N*s/m)
 rho     =       1.2;                % air density (kg/m^3)
-th      =       [m;Jz;a;b;Cf;Cr;rw;mu;Af;Al;Cx;Rr;rho];
-
+theta   =       [m;Jz;a;b;Cf;Cr;rw;mu;Af;Al;Cx;Rr;rho];
 %%
