@@ -11,9 +11,8 @@ clc
 
 % This function has to return two vectors containing the inner point and
 % the outer one of each wayline.
-[ inner_wl, outer_wl ]                      =       waylines_selector();
-
-n_wl                                        =       length(inner_wl);
+[ inner_wl, outer_wl ]       =       waylines_selector();
+n_wl  =  length(inner_wl);
 
 %% parameters initialization and setting of initial state
 run('Parameters.m');
@@ -75,7 +74,7 @@ for i = 1:n_iterations
   y_target   = xi0(2) + xi_dot(3)*sin(xi_dot(4));
   
   % check if the target position is feasible
-  inside = track_constraints(x_target,y_target,N,innerBoundary,outerBoundary);
+  [inside,boundary_number] = track_constraints(x_target,y_target,N,innerBoundary,outerBoundary);
   
   % if the target position is feasible, update of the state with the new
   % position. else exit the for cycle, because the trajectory is not
