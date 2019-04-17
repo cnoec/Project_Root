@@ -96,7 +96,7 @@ r_dot        = ( a*Fyf*cos(delta) - b*Fyr )/( Jz );
 xi_dot(1,1)  = X_dot;
 xi_dot(2,1)  = Y_dot;
 xi_dot(3,1)  = Ux_dot;
-xi_dot(4,1)  = beta_dot
+xi_dot(4,1)  = beta_dot;
 xi_dot(5,1)  = psi_dot;
 xi_dot(6,1)  = r_dot;
 

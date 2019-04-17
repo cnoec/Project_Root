@@ -11,8 +11,8 @@ clc
 
 % This function has to return two vectors containing the inner point and
 % the outer one of each wayline.
-[ inner_wl, outer_wl ]     =      waylines_selector();
-n_wl  =  length(inner_wl);
+[ inner_wl, outer_wl ]                      =      waylines_selector();
+n_wl                                        =      length(inner_wl(:,1));
 
 %% parameters initialization and setting of initial state
 run('Parameters.m');
@@ -36,16 +36,16 @@ u_output            =       [Td_step;delta_step];
 
 %% simulation
 
-n_iterations    =       N-1;
-boundary_number =       1;
-tau             =       0;
-d               =       0;
+n_iterations        =       N-1;
+boundary_number     =       1;
+tau                 =       0;
+d                   =       0;
 
-for i = 1:n_iterations
+for i = 1:n_iterations %end of the iteration when we reach the final wl
   
   % current wayline selection  
   
-  current_wl    = current_wayline(inner_wl,outer_wl,boundary_number,innerBoundary,outerBoundary,n_wl,N);
+  current_wl    =     current_wayline(inner_wl,outer_wl,boundary_number,innerBoundary,outerBoundary,n_wl,N);
   
   
   if (current_wl == n_wl)
@@ -58,7 +58,7 @@ for i = 1:n_iterations
       
       % interpolator
 
-      d_interpolated    =       interpolator_bws( inner_wl(current_wl),outer_wl(current_wl),inner_wl(current_wl+1),outer_wl(current_wl+1),xi0(1),xi0(2));
+      d_interpolated    =       interpolator_bws( inner_wl(current_wl,:),outer_wl(current_wl,:),inner_wl(current_wl+1,:),outer_wl(current_wl+1,:),xi0(1),xi0(2));
 
       T_kp1             =       T_opt(current_wl) + (T_opt(current_wl+1) - T_opt(current_wl))*d_interpolated;
       delta_kp1         =       delta_opt(current_wl) + (delta_opt(current_wl+1) - delta_opt(current_wl))*d_interpolated;
