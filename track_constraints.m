@@ -12,14 +12,23 @@ function [inside_track,boundary_number] = track_constraints(x_target,y_target,N,
 %           outerBoundary       -   matrix Nx3 - it contains the x,y,z
 %                                   coordinates of the outer boundary
 %                                   samples. 
+%           boundary_number     -   position in the inner boundary matrix
+%                                   of the coordinates corresponding to the
+%                                   last car position                                   
 %
 % Outputs:  inside_track        -   if  1 -> target position inside track
 %                                   if -1 -> target position outside track
+%           boundary_number     -   position in the inner boundary matrix
+%                                   of the coordinates corresponding to the
+%                                   last car position                                   
 
 % initialization of variables 
 inside_track = 0;
 
 % for-cycle
+% the cycle starts from boundary_number = 1, that is where the finish line
+% is. then it is updated so that the car can go only in the forward
+% direction
 for i = boundary_number:N
    j = N+1-i;
    
