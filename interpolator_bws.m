@@ -24,7 +24,7 @@ curr_pos        =       [x_k , y_k];
 % Wayline_kp1 =       [win_kp1,wout_kp1];
 
 d1              =       point_to_line_distance(curr_pos,win_k,wout_k);
-d1              =       point_to_line_distance(curr_pos,win_k,wout_k);
+d2              =       point_to_line_distance(curr_pos,win_kp1,wout_kp1);
 
 d_interpolated  =       ( d1 )/( d1 + d2 );
 
