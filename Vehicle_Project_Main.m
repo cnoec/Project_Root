@@ -21,8 +21,8 @@ r       =       0;          % yaw rate (rad/s)
 xi0     =       [X Y Ux beta psi r]';
 
 %% Step amplitude and input vector
-Td_step             =       80
-delta_step          =       50
+Td_step             =       80 % for now - random number
+delta_step          =       50 % for now - random number
 u_output            =       [Td_step;delta_step];
 
 %% trajectory optimizer
@@ -36,35 +36,33 @@ d               =       0;
 
 for i = 1:n_iterations
   % interpolator
-  if i ~= 1
-    xy  = [mean([innerBoundary(i+1,1,1) outerBoundary(N-i,1,1)]') mean([innerBoundary(i+1,2,1) outerBoundary(N-i,2,1)]')]'
-    line = [xi0(1),xy(1);xi0(2),xy(2)];
-    d = pdist(line,'euclidean')
-    u_output(2) = real(asin(d))
-  end
-  % 
+    
   
+  % from the output of the interpolator to the new state
   [xi_dot,Forces] = Vehicle_Model_Function(tau,xi0,u_output,d,theta);
-  % random xy coordinates generation - must to be replaced with the real
+  
   % update of the target position
-  x_target   = xi0(1) + cos(xi_dot(4))
-  y_target   = xi0(2) + sin(xi_dot(4))
-  xy  = [x_target y_target]';
+  x_target   = xi0(1) + xi_dot(3)*cos(xi_dot(4))
+  y_target   = xi0(2) + xi_dot(3)*sin(xi_dot(4))
+  
   % check if the target position is feasible
-  inside = track_constraints(xy(1),xy(2),N,innerBoundary,outerBoundary)
+  inside = track_constraints(x_target,y_target,N,innerBoundary,outerBoundary)
+  
   % if the target position is feasible, update of the state with the new
   % position. else exit the for cycle, because the trajectory is not
   % feasible.
   if inside == 1
-      plot([x_target xi0(1)],[y_target xi0(2)])
+      plot([x_target xi0(1)],[y_target xi0(2)]);
       pause(.001)
       xi0(1) = x_target;
       xi0(2) = y_target;
-      xi0(3) = xi_dot(4);
+      xi0(3) = xi_dot(3);
+      xi0(4) = xi_dot(4);
+      xi0(5) = xi_dot(5);
+      xi0(6) = xi_dot(6);
   else
       return
   end
   
 end
-
 
