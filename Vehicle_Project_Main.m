@@ -6,6 +6,7 @@ close all
 clc
 
 %% track generation and waypoints positioning
+
 [track,innerBoundary,outerBoundary,x0,y0,N] = track_generation();
 
 %% parameters initialization and setting of initial state
