@@ -19,14 +19,11 @@ function d_interpolated = interpolator_bws(win_k,wout_k,win_kp1,wout_kp1,x_k,y_k
 %   Output:
 %           - d_interpolated
 
-curr_pos        =       [x_k , y_k];
+curr_pos    =       [x_k , y_k];
 % Wayline_k   =       [win_k,wout_k];
 % Wayline_kp1 =       [win_kp1,wout_kp1];
 
-d1              =       point_to_line_distance(curr_pos,win_k,wout_k);
-d1              =       point_to_line_distance(curr_pos,win_k,wout_k);
-
-d_interpolated  =       ( d1 )/( d1 + d2 );
+d1          =       point_to_line_distance(curr_pos,win_k,wout_k);
 
 end
 
