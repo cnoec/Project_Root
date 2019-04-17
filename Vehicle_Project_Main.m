@@ -45,7 +45,7 @@ for i = 1:n_iterations
   
   % current wayline selection  
   
-  current_wl    =    current_wl = current_wayline(inner_wl,outer_wl,boundary_number,innerBoundary,outerBoundary,n_wl,N)
+  current_wl    = current_wayline(inner_wl,outer_wl,boundary_number,innerBoundary,outerBoundary,n_wl,N)
   
   
   if (current_wl == n_wl)
