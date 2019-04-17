@@ -1,4 +1,4 @@
-function [inside_track,boundary_number] = track_constraints(x_target,y_target,N,innerBoundary,outerBoundary)
+function [inside_track,boundary_number] = track_constraints(x_target,y_target,N,innerBoundary,outerBoundary,boundary_number)
 
 % constraint function h(x)>=0. It checks whether or not the target position
 % is inside the track and if it is feasible, by returning 1 or -1. 
@@ -20,7 +20,7 @@ function [inside_track,boundary_number] = track_constraints(x_target,y_target,N,
 inside_track = 0;
 
 % for-cycle
-for i = 1:N
+for i = boundary_number:N
    j = N+1-i;
    
    % selection of inner and outer boundaries' coordinates at track sample i
