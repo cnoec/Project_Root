@@ -49,7 +49,7 @@ for i = 1:n_iterations
   
   if (current_wl == n_wl)
   % If we are in correspondence of the last wayline we have to keep the
-  % optimal values untill we reach the end of the track, otherwise we'll
+  % optimal values until we reach the end of the track, otherwise we'll
   % have computational problem.
       u_output          =           [T_opt(current_wl);delta_opt(current_wl)];
   
