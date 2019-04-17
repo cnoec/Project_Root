@@ -11,7 +11,7 @@ clc
 
 % This function has to return two vectors containing the inner point and
 % the outer one of each wayline.
-[ inner_wl, outer_wl ]       =       waylines_selector();
+[ inner_wl, outer_wl ]     =      waylines_selector();
 n_wl  =  length(inner_wl);
 
 %% parameters initialization and setting of initial state
@@ -37,6 +37,7 @@ u_output            =       [Td_step;delta_step];
 %% simulation
 
 n_iterations    =       N-1;
+boundary_number = 1
 tau             =       0;
 d               =       0;
 
