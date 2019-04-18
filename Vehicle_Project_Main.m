@@ -7,13 +7,23 @@ clc
 
 %% track generation and waypoints positioning
 
-[track,innerBoundary,outerBoundary,x0,y0,N] = track_generation();
+[track,outerBoundary,innerBoundary,x0,y0,N] = track_generation();
 
 max_distance=100;
 
 % This function has to return two vectors containing the inner point and
 % the outer one of each wayline.
 [ inner_wl, outer_wl, n_wl ] = waylines_selector(innerBoundary,outerBoundary, max_distance);
+
+nrow_inner = length(innerBoundary(:,1));
+appoggio = zeros(nrow_inner,3);
+
+for ind=1:nrow_inner
+    appoggio(ind,:) = innerBoundary(nrow_inner-ind+1,:); 
+end
+
+innerBoundary=appoggio;
+clear appoggio
 
 %% parameters initialization and setting of initial state
 run('Parameters.m');
