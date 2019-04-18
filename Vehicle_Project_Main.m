@@ -7,12 +7,13 @@ clc
 
 %% track generation and waypoints positioning
 
-[track,innerBoundary,outerBoundary,x0,y0,N] =       track_generation();
+[track,innerBoundary,outerBoundary,x0,y0,N] = track_generation();
+
+max_distance=100;
 
 % This function has to return two vectors containing the inner point and
 % the outer one of each wayline.
-[ inner_wl, outer_wl ]                      =      waylines_selector();
-n_wl                                        =      length(inner_wl(:,1));
+[ inner_wl, outer_wl, n_wl ] = waylines_selector(innerBoundary,outerBoundary, max_distance);
 
 %% parameters initialization and setting of initial state
 run('Parameters.m');
@@ -25,7 +26,7 @@ psi     =       0;          % yaw angle (rad)
 r       =       0;          % yaw rate (rad/s)
 xi0     =       [X Y Ux beta psi r]';
 
-xi_sim(1,1:length(xi0)) = xi0;
+xi_sim(1,1:length(xi0)) = xi0;      %initialization of the simulation, da ottimizzare
 
 
 %% Step amplitude and input vector
