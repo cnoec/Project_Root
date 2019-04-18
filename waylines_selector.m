@@ -9,14 +9,15 @@ function [inner_wl, outer_wl, n_wl] = waylines_selector(innerBoundary,outerBound
 %             n_wl:     number of waylines
 %             
 
+% random point to identify the circumefernces
 
 A = [innerBoundary(50,1) innerBoundary(50,2) outerBoundary(70,1) outerBoundary(70,2);
     innerBoundary(100,1) innerBoundary(100,2) outerBoundary(140,1) outerBoundary(140,2);
     innerBoundary(150,1) innerBoundary(150,2) outerBoundary(210,1) outerBoundary(210,2);];
 
 [R,xcyc] = fit_circle_through_3_points(A);
-x_circle = (xcyc(1,1)+xcyc(1,2))/2;
-y_circle = (xcyc(2,1)+xcyc(2,2))/2;
+% x_circle = (xcyc(1,1)+xcyc(1,2))/2;
+% y_circle = (xcyc(2,1)+xcyc(2,2))/2;
 
 n_wl = ceil(2*pi*max(R(1),R(2))/max_distance);
 n_vec = length(innerBoundary(:,1));
