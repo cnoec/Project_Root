@@ -31,47 +31,32 @@ inside_track = 0;
 % direction
 for i = 1:N
    
-   % selection of inner and outer boundaries' coordinates at track sample i
-   innerPosition = [innerBoundary(i,1,1) innerBoundary(i,2,1)]';
-   outerPosition = [outerBoundary(i,1,1) outerBoundary(i,2,1)]';
+   % selection of inner and outer boundaries' coordinates at track sample 
+   % i and i+1
+   innerPosition_i   = [innerBoundary(i,1,1) innerBoundary(i,2,1)]';
+   outerPosition_i   = [outerBoundary(i,1,1) outerBoundary(i,2,1)]';
+   if(i == N) 
+           i = 0; 
+       end
+   innerPosition_ip1 = [innerBoundary(i+1,1,1) innerBoundary(i+1,2,1)]';
+   outerPosition_ip1 = [outerBoundary(i+1,1,1) outerBoundary(i+1,2,1)]';
    
-   % since the outer boundary doesn't always correspond to the one that has
-   % the greatest coordinates, auxiliary variables are used: for each 
-   % sample i, x_out and x_in, y_out and y_in are identified. 
-   if innerPosition(1)>outerPosition(1)
-       x_out = innerPosition(1);
-       x_in =  outerPosition(1);
-   else
-       x_out = outerPosition(1);
-       x_in  = innerPosition(1);
-   end
+   %creation of the polygon in which the car has to be.
+   polygon_1 = [innerPosition_i(1) outerPosition_i(1) innerPosition_ip1(1) outerPosition_ip1(1)];
+   polygon_2 = [innerPosition_i(2) outerPosition_i(2) innerPosition_ip1(2) outerPosition_ip1(2)];
+   k = convhull(polygon_1,polygon_2); 
+   %plot(polygon_1(k),polygon_2(k),'g-','linewidth',1)
+      
+   % to be inside the track, the target position must be inside the polygon
+   % formed by the inner and out boundaries and the track.   
+   inside_track = inpolygon(x_target,y_target,polygon_1(k),polygon_2(k));
    
-   if innerPosition(2)>outerPosition(2)
-       y_out = innerPosition(2);
-       y_in  = outerPosition(2);
-   else
-       y_out = outerPosition(2);
-       y_in  = innerPosition(2);
-   end
-
-   % to be inside the track, the target position must have x coordinates in
-   % between x_out and x_in and y coordinates in between y_out and y_in. 
-   % at the end of the for-cycle, if the target position is feasible, the
-   % inside_track variable will be greater than zero. else, the target
-   % position is not feasible
-   if (x_target >= x_in && x_target <= x_out)
-     if (y_target >= y_in && y_target <= y_out)
-       inside_track = inside_track + 1;
-       boundary_number = i;
-     end
-   end
-end
-
-% output variable setting
-if inside_track >= 1
-    inside_track = 1;
-else 
-    inside_track = -1;
-end
-
+    % output variable setting
+    if inside_track >= 1
+        inside_track = 1;
+        boundary_number = i;
+        return;
+    else 
+        inside_track = -1;
+    end
 end

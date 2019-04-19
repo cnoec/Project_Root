@@ -7,7 +7,7 @@ clc
 
 %% track generation and waypoints positioning
 
-[track,outerBoundary,innerBoundary,x0,y0,N] = track_generation();
+[track,outerBoundary,innerBoundary,N] = track_generation();
 
 max_distance = 50;
 
@@ -26,6 +26,16 @@ innerBoundary = aux2;
 outerBoundary = aux1;
 clear aux1 aux2 
 
+
+% plot of finish line and initialization the starting position
+line([innerBoundary(1,1,1) outerBoundary(1,1,1)],[innerBoundary(1,2,1) outerBoundary(1,2,1)],'color','b','linewidth', 7) 
+x   = [innerBoundary(1,1,1) outerBoundary(1,1,1)]';
+y   = [innerBoundary(1,2,1) outerBoundary(1,2,1)]';
+x0  = mean(x);
+y0  = mean(y);
+plot(x0,y0,'*r')
+
+
 % This function has to return two vectors containing the inner point and
 % the outer one of each wayline.
 [ inner_wl, outer_wl, n_wl ] = waylines_selector(innerBoundary,outerBoundary, max_distance);
@@ -40,15 +50,11 @@ end
 %% parameters initialization and setting of initial state
 run('Parameters.m');
 
-% m = (outerBoundary(1,2)-innerBoundary(1,2))/(outerBoundary(1,1)-innerBoundary(1,1));
-m = (211-210)/(184.88-178.95);
+m = (outerBoundary(1,2)-innerBoundary(1,2))/(outerBoundary(1,1)-innerBoundary(1,1));
 m = -1/m;
 
-X       =       182.2;         % inertial X position (m)
-Y       =       208.5;         % inertial Y position (m)
-
-% X       =       165.25;         % inertial X position (m)
-% Y       =       248.35;
+X       =       x0;         % inertial X position (m)
+Y       =       y0;         % inertial Y position (m)
 Ux      =       20;         % body x velocity (m/s)
 beta    =       0;          % sideslip angle (rad)
 psi     =       atan(m);    % yaw angle (rad)
@@ -74,7 +80,7 @@ T_opt               =       [Tdmax/10;
                          
 delta_opt           =       [0;
                              -pi/15;
-                             +pi/50;
+                             -5*pi/9;
                              150;
                              150;
                              150;];
@@ -83,18 +89,16 @@ delta_opt           =       [0;
 
 %% simulation
 
-n_iterations        =       1000;
+n_iterations        =       300;
 boundary_number     =       1;
 tau                 =       0;
 d                   =       0;
 Ts                  =       1e-2;  
 
 for i = 2:n_iterations %end of the iteration when we reach the final wl
-  i
-  %current wayline selection  
-%   current_wl    =     current_wayline(inner_wl,outer_wl,boundary_number,innerBoundary,outerBoundary,n_wl,N)
-    current_wl=2;
-  
+  % current wayline selection  
+   current_wl    =     current_wayline(inner_wl,outer_wl,boundary_number,innerBoundary,outerBoundary,n_wl,N)
+
 %   if (current_wl == n_wl)
   % If we are in correspondence of the last wayline we have to keep the
   % optimal values until we reach the end of the track, otherwise we'll
@@ -105,12 +109,12 @@ for i = 2:n_iterations %end of the iteration when we reach the final wl
       
       % interpolator
 
-      d_interpolated    =       interpolator_bws( inner_wl(current_wl,1:2),outer_wl(current_wl,1:2),inner_wl(current_wl+1,1:2),outer_wl(current_wl+1,1:2),xi_sim(1,i-1),xi_sim(2,i-1))
+      d_interpolated    =       interpolator_bws( inner_wl(current_wl,1:2),outer_wl(current_wl,1:2),inner_wl(current_wl+1,1:2),outer_wl(current_wl+1,1:2),xi_sim(1,i-1),xi_sim(2,i-1));
 
       T_kp1             =       T_opt(current_wl) + (T_opt(current_wl+1) - T_opt(current_wl))*d_interpolated;
       delta_kp1         =       delta_opt(current_wl) + (delta_opt(current_wl+1) - delta_opt(current_wl))*d_interpolated;
 
-      u_output          =       [T_kp1;delta_kp1]
+      u_output          =       [T_kp1;delta_kp1];
   
 %   end
   
@@ -125,8 +129,8 @@ for i = 2:n_iterations %end of the iteration when we reach the final wl
   % feasible.
   
   if inside == 1
-      plot([xi_sim(1,i) xi_sim(1,i-1)],[xi_sim(2,i) xi_sim(2,i-1)]);
-      pause(.001)
+     plot([xi_sim(1,i) xi_sim(1,i-1)],[xi_sim(2,i) xi_sim(2,i-1)]);%     
+     pause(.001)
   else
       return
   end
