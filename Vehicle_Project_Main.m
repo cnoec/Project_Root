@@ -69,8 +69,8 @@ T_opt               =       [Tdmax/10;
                              Tdmax/10;];
                          
 delta_opt           =       [0;
-                             0;
                              -pi/6;
+                             0;
                              150;
                              150;
                              150;];
@@ -79,7 +79,7 @@ delta_opt           =       [0;
 
 %% simulation
 
-n_iterations        =       300;
+n_iterations        =       162;
 boundary_number     =       1;
 tau                 =       0;
 d                   =       0;
@@ -120,12 +120,11 @@ for i = 2:n_iterations %end of the iteration when we reach the final wl
   % position. else exit the for cycle, because the trajectory is not
   % feasible.
   
-  if inside == 1
+%   if inside == 1
       plot([xi_sim(1,i) xi_sim(1,i-1)],[xi_sim(2,i) xi_sim(2,i-1)]);
       pause(.001)
-  else
-      return
-  end
+%   else
+%       return
+%   end
   
 end
-
