@@ -80,7 +80,7 @@ T_opt               =       [Tdmax/10;
                          
 delta_opt           =       [0;
                              -pi/15;
-                             -5*pi/9;
+                             0;
                              150;
                              150;
                              150;];
@@ -89,7 +89,7 @@ delta_opt           =       [0;
 
 %% simulation
 
-n_iterations        =       300;
+n_iterations        =       500;
 boundary_number     =       1;
 tau                 =       0;
 d                   =       0;
