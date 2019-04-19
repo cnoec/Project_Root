@@ -16,8 +16,8 @@ function [track,innerBoundary,outerBoundary,N] = track_generation()
 
 
 % create and plot track
-track = circle_track()
-plot(track),hold on
+track = oval_track()
+plot(track)
 camroll(-90)
 
 % find inner and outer boundaries coordinates

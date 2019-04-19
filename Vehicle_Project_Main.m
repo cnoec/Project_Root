@@ -26,6 +26,10 @@ innerBoundary = aux2;
 outerBoundary = aux1;
 clear aux1 aux2 
 
+figure
+plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),outerBoundary(:,2),'black'),grid on
+axis equal
+hold on
 
 % plot of finish line and initialization the starting position
 line([innerBoundary(1,1,1) outerBoundary(1,1,1)],[innerBoundary(1,2,1) outerBoundary(1,2,1)],'color','b','linewidth', 7) 
@@ -55,9 +59,9 @@ m = -1/m;
 
 X       =       x0;         % inertial X position (m)
 Y       =       y0;         % inertial Y position (m)
-Ux      =       20;         % body x velocity (m/s)
+Ux      =       -20;         % body x velocity (m/s)
 beta    =       0;          % sideslip angle (rad)
-psi     =       atan(m);    % yaw angle (rad)
+psi     =       0;    % yaw angle (rad)
 r       =       0;          % yaw rate (rad/s)
 xi0     =       [X Y Ux beta psi r]';
 
@@ -78,9 +82,9 @@ T_opt               =       [Tdmax/10;
                              Tdmax/10;
                              Tdmax/10;];
                          
-delta_opt           =       [0;
-                             -pi/15;
-                             0;
+delta_opt           =       [-pi/180;
+                             -pi/19;
+                             pi/50;
                              150;
                              150;
                              150;];
@@ -89,7 +93,7 @@ delta_opt           =       [0;
 
 %% simulation
 
-n_iterations        =       500;
+n_iterations        =       1000;
 boundary_number     =       1;
 tau                 =       0;
 d                   =       0;
