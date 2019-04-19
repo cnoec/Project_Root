@@ -9,7 +9,7 @@ clc
 
 [track,outerBoundary,innerBoundary,x0,y0,N] = track_generation();
 
-max_distance = 100;
+max_distance = 50;
 
 aux1 = zeros(N,3);
 aux2 = zeros(N,3);
@@ -40,11 +40,15 @@ end
 %% parameters initialization and setting of initial state
 run('Parameters.m');
 
-m = (outerBoundary(1,2)-innerBoundary(1,2))/(outerBoundary(1,1)-innerBoundary(1,1));
+% m = (outerBoundary(1,2)-innerBoundary(1,2))/(outerBoundary(1,1)-innerBoundary(1,1));
+m = (211-210)/(184.88-178.95);
 m = -1/m;
 
-X       =       164;         % inertial X position (m)
-Y       =       249.9;         % inertial Y position (m)
+X       =       182.2;         % inertial X position (m)
+Y       =       208.5;         % inertial Y position (m)
+
+% X       =       165.25;         % inertial X position (m)
+% Y       =       248.35;
 Ux      =       20;         % body x velocity (m/s)
 beta    =       0;          % sideslip angle (rad)
 psi     =       atan(m);    % yaw angle (rad)
@@ -69,8 +73,8 @@ T_opt               =       [Tdmax/10;
                              Tdmax/10;];
                          
 delta_opt           =       [0;
-                             -pi/6;
-                             0;
+                             -pi/15;
+                             +pi/50;
                              150;
                              150;
                              150;];
@@ -79,7 +83,7 @@ delta_opt           =       [0;
 
 %% simulation
 
-n_iterations        =       162;
+n_iterations        =       1000;
 boundary_number     =       1;
 tau                 =       0;
 d                   =       0;
@@ -87,9 +91,9 @@ Ts                  =       1e-2;
 
 for i = 2:n_iterations %end of the iteration when we reach the final wl
   i
-  % current wayline selection  
+  %current wayline selection  
 %   current_wl    =     current_wayline(inner_wl,outer_wl,boundary_number,innerBoundary,outerBoundary,n_wl,N)
-    current_wl=1;
+    current_wl=2;
   
 %   if (current_wl == n_wl)
   % If we are in correspondence of the last wayline we have to keep the
@@ -120,11 +124,11 @@ for i = 2:n_iterations %end of the iteration when we reach the final wl
   % position. else exit the for cycle, because the trajectory is not
   % feasible.
   
-%   if inside == 1
+  if inside == 1
       plot([xi_sim(1,i) xi_sim(1,i-1)],[xi_sim(2,i) xi_sim(2,i-1)]);
       pause(.001)
-%   else
-%       return
-%   end
+  else
+      return
+  end
   
 end
