@@ -43,11 +43,11 @@ run('Parameters.m');
 m = (outerBoundary(1,2)-innerBoundary(1,2))/(outerBoundary(1,1)-innerBoundary(1,1));
 m = -1/m;
 
-X       =       x0;         % inertial X position (m)
-Y       =       y0;         % inertial Y position (m)
-Ux      =       20;          % body x velocity (m/s)
+X       =       164;         % inertial X position (m)
+Y       =       249.9;         % inertial Y position (m)
+Ux      =       20;         % body x velocity (m/s)
 beta    =       0;          % sideslip angle (rad)
-psi     =       atan(m);          % yaw angle (rad)
+psi     =       atan(m);    % yaw angle (rad)
 r       =       0;          % yaw rate (rad/s)
 xi0     =       [X Y Ux beta psi r]';
 
@@ -69,8 +69,8 @@ T_opt               =       [Tdmax/10;
                              Tdmax/10;];
                          
 delta_opt           =       [0;
-                             pi*7/4;
-                             pi/4;
+                             0;
+                             -pi/6;
                              150;
                              150;
                              150;];
