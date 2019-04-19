@@ -35,7 +35,7 @@ hold on
 line([innerBoundary(1,1,1) outerBoundary(1,1,1)],[innerBoundary(1,2,1) outerBoundary(1,2,1)],'color','b','linewidth', 7) 
 x   = [innerBoundary(1,1,1) outerBoundary(1,1,1)]';
 y   = [innerBoundary(1,2,1) outerBoundary(1,2,1)]';
-x0  = mean(x);
+x0  = mean(x)+1;
 y0  = mean(y);
 plot(x0,y0,'*r')
 
@@ -44,6 +44,8 @@ plot(x0,y0,'*r')
 % the outer one of each wayline.
 [ inner_wl, outer_wl, n_wl ] = waylines_selector(innerBoundary,outerBoundary, max_distance);
 
+% inner_wl(3,:) = [-61.13 -45.3 0];
+% outer_wl(3,:) = [-62.58 -51.43 0];
 % plot waylines
 for i = 1:n_wl
     line([inner_wl(i,1,1) outer_wl(i,1,1)],[inner_wl(i,2,1) outer_wl(i,2,1)],'color','y','linewidth', 5)
@@ -59,12 +61,13 @@ m = -1/m;
 
 X       =       x0;         % inertial X position (m)
 Y       =       y0;         % inertial Y position (m)
-Ux      =       -20;         % body x velocity (m/s)
+Ux      =       20;         % body x velocity (m/s)
 beta    =       0;          % sideslip angle (rad)
-psi     =       0;    % yaw angle (rad)
+psi     =       atan(m);    % yaw angle (rad)
 r       =       0;          % yaw rate (rad/s)
 xi0     =       [X Y Ux beta psi r]';
 
+plot(X,Y,'*r')
 %initialization of the simulation, da ottimiz-zare
 xi_sim(:,1)      =       xi0;
 
@@ -75,17 +78,17 @@ u_output            =       [Td_step;delta_step];
 
 %% trajectory optimizer
 
-T_opt               =       [Tdmax/10;
+T_opt               =       [Tdmax;
+                             Tdmax;
                              Tdmax/10;
-                             Tdmax/10;
-                             Tdmax/10;
+                             Tdmax;
                              Tdmax/10;
                              Tdmax/10;];
                          
-delta_opt           =       [-pi/180;
-                             -pi/19;
-                             pi/50;
-                             150;
+delta_opt           =       [0;
+                             -pi/9;
+                            -0.0001*pi;
+                            -pi;
                              150;
                              150;];
 
@@ -101,7 +104,7 @@ Ts                  =       1e-2;
 
 for i = 2:n_iterations %end of the iteration when we reach the final wl
   % current wayline selection  
-   current_wl    =     current_wayline(inner_wl,outer_wl,boundary_number,innerBoundary,outerBoundary,n_wl,N)
+  current_wl    =     current_wayline(inner_wl,outer_wl,boundary_number,innerBoundary,outerBoundary,n_wl,N)
 
 %   if (current_wl == n_wl)
   % If we are in correspondence of the last wayline we have to keep the
@@ -118,7 +121,7 @@ for i = 2:n_iterations %end of the iteration when we reach the final wl
       T_kp1             =       T_opt(current_wl) + (T_opt(current_wl+1) - T_opt(current_wl))*d_interpolated;
       delta_kp1         =       delta_opt(current_wl) + (delta_opt(current_wl+1) - delta_opt(current_wl))*d_interpolated;
 
-      u_output          =       [T_kp1;delta_kp1];
+      u_output          =       [T_kp1;delta_kp1]
   
 %   end
   
@@ -134,9 +137,10 @@ for i = 2:n_iterations %end of the iteration when we reach the final wl
   
   if inside == 1
      plot([xi_sim(1,i) xi_sim(1,i-1)],[xi_sim(2,i) xi_sim(2,i-1)]);%     
-     pause(.001)
+    pause(.00001)
   else
       return
   end
   
 end
+

@@ -25,13 +25,13 @@ function current_wl = current_wayline(inner_wl,outer_wl,boundary_number,innerBou
 %
 
 % initialization of variables and boundary coordinates selection
-current_wl = 0;
+current_wl = 1;
 innerPosition = [innerBoundary(boundary_number,1,1) innerBoundary(boundary_number,2,1)];
 outerPosition = [outerBoundary(boundary_number,1,1) outerBoundary(boundary_number,2,1)];
 
 x_in = innerPosition(1);
 y_in = innerPosition(2);
-
+%plot(x_in,y_in,'*r')
 for i = 1:n_wl
    
    % selection of inner and outer boundaries' coordinates of the waylines 
@@ -48,15 +48,15 @@ for i = 1:n_wl
    polygon_1 = [innerPosition_i(1) outerPosition_i(1) innerPosition_ip1(1) outerPosition_ip1(1)];
    polygon_2 = [innerPosition_i(2) outerPosition_i(2) innerPosition_ip1(2) outerPosition_ip1(2)];
    k = convhull(polygon_1,polygon_2); 
-  % plot(polygon_1(k),polygon_2(k),'g-','linewidth',1)
+%    plot(polygon_1(k),polygon_2(k),'g-','linewidth',1)
       
    % to be inside the track, the inner boudary corresponding to the current 
    % position must be inside the polygon formed by the inner and out 
    % boundaries of the previous and following wayline  
-   inside_pol = inpolygon(x_in,y_in,polygon_1(k),polygon_2(k));
+   [inside_pol,on_pol] = inpolygon(x_in,y_in,polygon_1(k),polygon_2(k));
    
     % output variable setting
-    if inside_pol >= 1
+    if (inside_pol >= 1)||(on_pol >= 1)
         if(i==0)
             i = n_wl;
         end
