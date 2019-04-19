@@ -29,12 +29,11 @@ inside_track = 0;
 % the cycle starts from boundary_number = 1, that is where the finish line
 % is. then it is updated so that the car can go only in the forward
 % direction
-for i = boundary_number:N
-   j = N+1-i;
+for i = 1:N
    
    % selection of inner and outer boundaries' coordinates at track sample i
    innerPosition = [innerBoundary(i,1,1) innerBoundary(i,2,1)]';
-   outerPosition = [outerBoundary(j,1,1) outerBoundary(j,2,1)]';
+   outerPosition = [outerBoundary(i,1,1) outerBoundary(i,2,1)]';
    
    % since the outer boundary doesn't always correspond to the one that has
    % the greatest coordinates, auxiliary variables are used: for each 
@@ -63,7 +62,7 @@ for i = boundary_number:N
    if (x_target >= x_in && x_target <= x_out)
      if (y_target >= y_in && y_target <= y_out)
        inside_track = inside_track + 1;
-       boundary_number = i
+       boundary_number = i;
      end
    end
 end
