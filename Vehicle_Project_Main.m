@@ -8,8 +8,7 @@ clc
 %% track generation and waypoints positioning
 
 [track,outerBoundary,innerBoundary,N] = track_generation();
-
-max_distance = 50;
+n_wl=28;
 
 aux1 = zeros(N,3);
 aux2 = zeros(N,3);
@@ -42,11 +41,12 @@ plot(x0,y0,'*r')
 
 % This function has to return two vectors containing the inner point and
 % the outer one of each wayline.
-[ inner_wl, outer_wl, n_wl ] = waylines_selector(innerBoundary,outerBoundary, max_distance);
+[ inner_wl, outer_wl] = waylines_selector(innerBoundary,outerBoundary, n_wl);
 
 % inner_wl(3,:) = [-61.13 -45.3 0];
 % outer_wl(3,:) = [-62.58 -51.43 0];
 % plot waylines
+
 for i = 1:n_wl
     line([inner_wl(i,1,1) outer_wl(i,1,1)],[inner_wl(i,2,1) outer_wl(i,2,1)],'color','y','linewidth', 5)
     txt = {i};
