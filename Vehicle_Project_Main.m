@@ -5,6 +5,10 @@ clear all
 close all
 clc
 
+path        =           pwd;
+addpath('Functions');
+addpath('Model');
+
 %% track generation and waypoints positioning
 
 [track,outerBoundary,innerBoundary,N] = track_generation();
