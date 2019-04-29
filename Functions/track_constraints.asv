@@ -33,24 +33,23 @@ for i = 1:N
    
    % selection of inner and outer boundaries' coordinates at track sample 
    % i and i+1
+   innerPosition_i   = [innerBoundary(i,1,1) innerBoundary(i,2,1)]';
+   outerPosition_i   = [outerBoundary(i,1,1) outerBoundary(i,2,1)]';
    if(i == N) 
-       innerPosition_i   = [innerBoundary(i,1,1) innerBoundary(i,2,1)]';
-       outerPosition_i   = [outerBoundary(i,1,1) outerBoundary(i,2,1)]';
-       i = 1; 
-       innerPosition_ip1 = [innerBoundary(i+1,1,1) innerBoundary(i+1,2,1)]';
-       outerPosition_ip1 = [outerBoundary(i+1,1,1) outerBoundary(i+1,2,1)]';
-   else
-       innerPosition_i   = [innerBoundary(i,1,1) innerBoundary(i,2,1)]';
-       outerPosition_i   = [outerBoundary(i,1,1) outerBoundary(i,2,1)]';
-       innerPosition_ip1 = [innerBoundary(i+1,1,1) innerBoundary(i+1,2,1)]';
-       outerPosition_ip1 = [outerBoundary(i+1,1,1) outerBoundary(i+1,2,1)]';
-   end
+           i = 0; 
+           innerPosition_ip1 = [innerBoundary(i+1,1,1) innerBoundary(i+1,2,1)]';
+           outerPosition_ip1 = [outerBoundary(i+1,1,1) outerBoundary(i+1,2,1)]';
+   
+       end
+   innerPosition_ip1 = [innerBoundary(i+1,1,1) innerBoundary(i+1,2,1)]';
+   outerPosition_ip1 = [outerBoundary(i+1,1,1) outerBoundary(i+1,2,1)]';
+   
    %creation of the polygon in which the car has to be.
    
-   polygon_1 = [innerPosition_i(1) outerPosition_i(1) innerPosition_ip1(1) outerPosition_ip1(1)];
-   polygon_2 = [innerPosition_i(2) outerPosition_i(2) innerPosition_ip1(2) outerPosition_ip1(2)];
+   polygon_1 = [innerPosition_i(1) outerPosition_i(1) innerPosition_ip1(1) outerPosition_ip1(1)]
+   polygon_2 = [innerPosition_i(2) outerPosition_i(2) innerPosition_ip1(2) outerPosition_ip1(2)]
    k = convhull(polygon_1,polygon_2); 
-   % plot(polygon_1(k),polygon_2(k),'g-','linewidth',1)
+   plot(polygon_1(k),polygon_2(k),'g-','linewidth',1)
       
    % to be inside the track, the target position must be inside the polygon
    % formed by the inner and out boundaries and the track.   

@@ -48,7 +48,7 @@ for i = 1:n_wl
    polygon_1 = [innerPosition_i(1) outerPosition_i(1) innerPosition_ip1(1) outerPosition_ip1(1)];
    polygon_2 = [innerPosition_i(2) outerPosition_i(2) innerPosition_ip1(2) outerPosition_ip1(2)];
    k = convhull(polygon_1,polygon_2); 
-%    plot(polygon_1(k),polygon_2(k),'g-','linewidth',1)
+   % plot(polygon_1(k),polygon_2(k),'r-','linewidth',1)
       
    % to be inside the track, the inner boudary corresponding to the current 
    % position must be inside the polygon formed by the inner and out 
@@ -56,13 +56,20 @@ for i = 1:n_wl
    [inside_pol,on_pol] = inpolygon(x_in,y_in,polygon_1(k),polygon_2(k));
    
     % output variable setting
-    if (inside_pol >= 1)||(on_pol >= 1)
+    if (inside_pol >= 1)&&(on_pol == 0)
         if(i==0)
             i = n_wl;
         end
         current_wl = i;
         return;
+    elseif (on_pol >= 1)
+         if(i==0)
+            i = 1;
+        end
+        current_wl = i+1;
+        return;
     end
+    
 end
 
 

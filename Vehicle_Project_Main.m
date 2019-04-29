@@ -12,16 +12,17 @@ addpath('Model');
 %% track generation and waypoints positioning
 
 [track,outerBoundary,innerBoundary,N] = track_generation();
-n_wl=28;
+n_wl=30;
 
 aux1 = zeros(N,3);
 aux2 = zeros(N,3);
 
 for i=1:N
-   aux1(i,:) = outerBoundary(N-i+1,:); 
    if(i==N)
-       aux2(i,:) = innerBoundary(1,:);
+       aux1(i,:) = outerBoundary(1,:); 
+       aux2(i,:) = innerBoundary(2,:);
    else
+       aux1(i,:) = outerBoundary(N-i+1,:); 
        aux2(i,:) = innerBoundary(i+1,:);
    end
 end
@@ -92,8 +93,8 @@ T_opt               =       [Tdmax;
 delta_opt           =       [0;
                              -pi/9;
                             -0.0001*pi;
-                            -pi;
-                             150;
+                            -pi/2;
+                             pi/9;
                              150;];
 
 % [T_opt, delta_opt]  =       optimizer();
