@@ -55,7 +55,8 @@ plot(x0,y0,'*r')
 % plot waylines
 
 for i = 1:n_wl
-    line([inner_wl(i,1,1) outer_wl(i,1,1)],[inner_wl(i,2,1) outer_wl(i,2,1)],'color','y','linewidth', 5)
+    line([inner_wl(i,1,1) outer_wl(i,1,1)],[inner_wl(i,2,1) outer_wl(i,2,1)],...
+        'color','y','linewidth', 5)
     txt = {i};
     text(inner_wl(i,1,1)+5,inner_wl(i,2,1)+2,txt)
 end   
@@ -111,7 +112,8 @@ Ts                  =       1e-2;
 
 for i = 2:n_iterations %end of the iteration when we reach the final wl
   % current wayline selection  
-  current_wl    =     current_wayline(inner_wl,outer_wl,boundary_number,innerBoundary,outerBoundary,n_wl,N)
+  current_wl    =     current_wayline(inner_wl,outer_wl,boundary_number,...
+                      innerBoundary,outerBoundary,n_wl,N)
 
 %   if (current_wl == n_wl)
   % If we are in correspondence of the last wayline we have to keep the
@@ -123,12 +125,16 @@ for i = 2:n_iterations %end of the iteration when we reach the final wl
       
       % interpolator
 
-      d_interpolated    =       interpolator_bws( inner_wl(current_wl,1:2),outer_wl(current_wl,1:2),inner_wl(current_wl+1,1:2),outer_wl(current_wl+1,1:2),xi_sim(1,i-1),xi_sim(2,i-1));
+      d_interpolated    =       interpolator_bws( inner_wl(current_wl,1:2),...
+                                outer_wl(current_wl,1:2),inner_wl(current_wl+1,1:2),...
+                                outer_wl(current_wl+1,1:2),xi_sim(1,i-1),xi_sim(2,i-1));
 
-      T_kp1             =       T_opt(current_wl) + (T_opt(current_wl+1) - T_opt(current_wl))*d_interpolated;
-      delta_kp1         =       delta_opt(current_wl) + (delta_opt(current_wl+1) - delta_opt(current_wl))*d_interpolated;
+      T_kp1             =       T_opt(current_wl) + (T_opt(current_wl+1) ...
+                                - T_opt(current_wl))*d_interpolated;
+      delta_kp1         =       delta_opt(current_wl) + (delta_opt(current_wl+1)...
+                                - delta_opt(current_wl))*d_interpolated;
 
-      u_output          =       [T_kp1;delta_kp1]
+      u_output          =       [T_kp1;delta_kp1];
   
 %   end
   
