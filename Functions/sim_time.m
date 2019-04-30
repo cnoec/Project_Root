@@ -3,7 +3,7 @@ function [time, end_check] = sim_time(u_opt, innerBoundary, outerBoundary, inner
 %     Output: time, end_check: 0 vincolo violato, 1 arrivato alla fine
 
 
-T_opt = u_opt(1:N)
+T_opt = u_opt(1:N);
 delta_opt = u_opt((N+1):(2*N));
 
 n_iterations        =       1000;   %worst case
@@ -15,7 +15,7 @@ Ts                  =       1e-2;
 for i = 2:n_iterations %end of the iteration when we reach the final wl
     
   % current wayline selection  
-  current_wl    =     current_wayline(inner_wl,outer_wl,boundary_number,innerBoundary,outerBoundary,n_wl,N)
+  current_wl    =     current_wayline(inner_wl,outer_wl,boundary_number,innerBoundary,outerBoundary,n_wl,N);
 
 %   if (current_wl == n_wl)
   % If we are in correspondence of the last wayline we have to keep the
@@ -32,7 +32,7 @@ for i = 2:n_iterations %end of the iteration when we reach the final wl
       T_kp1             =       T_opt(current_wl) + (T_opt(current_wl+1) - T_opt(current_wl))*d_interpolated;
       delta_kp1         =       delta_opt(current_wl) + (delta_opt(current_wl+1) - delta_opt(current_wl))*d_interpolated;
 
-      u_output          =       [T_kp1;delta_kp1]
+      u_output          =       [T_kp1;delta_kp1];
   
 %   end
   
@@ -40,7 +40,7 @@ for i = 2:n_iterations %end of the iteration when we reach the final wl
   xi_sim(:,i) = xi_sim(:,i-1) + Ts*Vehicle_Model_Function(0, xi_sim(:,i-1),u_output, 0, theta);
   
   % check if the target position is feasible
-  [inside, boundary_number] = track_constraints(xi_sim(1,i),xi_sim(2,i),N,innerBoundary,outerBoundary,boundary_number)
+  [inside, boundary_number] = track_constraints(xi_sim(1,i),xi_sim(2,i),N,innerBoundary,outerBoundary,boundary_number);
  
   % if the target position is feasible, update of the state with the new
   % position. else exit the for cycle, because the trajectory is not

@@ -31,12 +31,14 @@ outerBoundary = aux1;
 clear aux1 aux2 
 
 figure
-plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),outerBoundary(:,2),'black'),grid on
+plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
+    outerBoundary(:,2),'black'),grid on
 axis equal
 hold on
 
 % plot of finish line and initialization the starting position
-line([innerBoundary(1,1,1) outerBoundary(1,1,1)],[innerBoundary(1,2,1) outerBoundary(1,2,1)],'color','b','linewidth', 7) 
+line([innerBoundary(1,1,1) outerBoundary(1,1,1)],...
+    [innerBoundary(1,2,1) outerBoundary(1,2,1)],'color','b','linewidth', 7) 
 x   = [innerBoundary(1,1,1) outerBoundary(1,1,1)]';
 y   = [innerBoundary(1,2,1) outerBoundary(1,2,1)]';
 x0  = mean(x)+1;
