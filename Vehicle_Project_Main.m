@@ -148,12 +148,12 @@ for i = 2:n_iterations %end of the iteration when we reach the final wl
   % position. else exit the for cycle, because the trajectory is not
   % feasible.
   
-  if inside == 1
+%   if inside == 1
      plot([xi_sim(1,i) xi_sim(1,i-1)],[xi_sim(2,i) xi_sim(2,i-1)]);%     
     pause(.00001)
-  else
-      return
-  end
+%   else
+%       return
+ % end
   
 end
 
