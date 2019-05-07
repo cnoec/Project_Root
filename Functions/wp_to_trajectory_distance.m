@@ -20,6 +20,10 @@ function dist = wp_to_trajectory_distance( target, traject, cmd )
 % OUTPUTS
 %       ditance:    minimum distance
 
+% Initialization in order to let work the algorithm
+target  =       target';
+traject =       traject';
+
 T       =       length( traject(:,1) );
 N       =       length( target );
 
@@ -34,11 +38,8 @@ if ( strcmp( cmd, 'only' ) )
         if ( norm( target - traject(j,:) ) < dist )
             
             dist    =       norm( target - traject(j,:) );
-            display([dist j]);
             
         end
-        
-        display([norm( target - traject(j,:) ) j])
         
     end
 

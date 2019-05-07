@@ -55,13 +55,13 @@ u(n_iterations+1:2*n_iterations)    =       5*pi/180;
 
 n_states                            =       length(xi);
 
-% for i=1:(n_states-1)
-%    plot([xi(1,i) xi(1,i+1)],[xi(2,i) xi(2,i+1)],'*r');
-% end
+for i=1:(n_states-1)
+   plot([xi(1,i) xi(1,i+1)],[xi(2,i) xi(2,i+1)],'*r');
+end
 
 
-% lanciatelo cosi com'è 
+% ok adesso funziona, potete passare normalmente vettori colonna
 target = [ -40; 34.74];
-dist = wp_to_trajectory_distance( target, xi(1:2,:)', 'only' )
+dist = wp_to_trajectory_distance( target, xi(1:2,:), 'only' )
 
 
