@@ -23,7 +23,7 @@ function dist = wp_to_trajectory_distance( target, traject, cmd )
 T       =       length( traject(:,1) );
 N       =       length( target );
 
-if ( strmcp( cmd, 'only' ) )
+if ( strcmp( cmd, 'only' ) )
 
     % INITIALIZATION
     dist        =       norm( target - traject(1,:) );

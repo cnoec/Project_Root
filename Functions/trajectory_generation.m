@@ -24,7 +24,7 @@ addpath( '..' );
 end_check = 1;
 t_vec = 0:Ts:(T_end-Ts);
 t_vec = t_vec';
-N = length(t_vec);
+N = length(t_vec) 
 
 %% dimensional check
 
@@ -51,7 +51,7 @@ run('Parameters.m');
 
 for ind=2:N
     input = [T_in(ind); delta_in(ind);];
-    xi(:,ind) = xi(:,ind-1)  + Ts*Vehicle_Model_Function(tau, xi(:,ind-1), input, d, theta);
+    xi(:,ind) = xi(:,ind-1)  + Ts*Vehicle_Model_Function(tau, xi(:,ind-1), input, d, theta)
 end
 
 
