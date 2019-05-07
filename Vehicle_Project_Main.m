@@ -36,7 +36,7 @@ psi     =       atan(m);    % yaw angle (rad)
 r       =       0;          % yaw rate (rad/s)
 xi0     =       [X Y Ux beta psi r]';
 
-plot(X,Y,'*r')
+plot(X,Y,'*r');
 
 %% simulation
 
@@ -47,22 +47,21 @@ Ts                  =       1e-1;
 T_end               =       10;
 n_iterations        =       T_end/Ts;
 
-u = ones(2*n_iterations,1);
-u(1:n_iterations) = 150;
-u(n_iterations+1:2*n_iterations) = 5*pi/180;
+u                                   =       ones(2*n_iterations,1);
+u(1:n_iterations)                   =       150;
+u(n_iterations+1:2*n_iterations)    =       5*pi/180;
 
-[xi, t_vec, end_check] = trajectory_generation(u, xi0, T_end, Ts);
+[xi, t_vec, end_check]              =       trajectory_generation(u, xi0, T_end, Ts);
 
-n_states = length(xi);
+n_states                            =       length(xi);
 
-for i=1:(n_states-1)
-   plot([xi(1,i) xi(1,i+1)],[xi(2,i) xi(2,i+1)],'*r');
-end
+% for i=1:(n_states-1)
+%    plot([xi(1,i) xi(1,i+1)],[xi(2,i) xi(2,i+1)],'*r');
+% end
 
 
-% fai la prova con questi parametri, esce 76.5 ma dovrebbe essere circa 22
-% target = [ -40; 34.74];
-% dist = wp_to_trajectory_distance( target, xi(1:2,:)', 'only' )
-
+% lanciatelo cosi com'è 
+target = [ -40; 34.74];
+dist = wp_to_trajectory_distance( target, xi(1:2,:)', 'only' )
 
 

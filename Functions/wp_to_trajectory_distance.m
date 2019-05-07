@@ -26,7 +26,7 @@ N       =       length( target );
 if ( strcmp( cmd, 'only' ) )
 
     % INITIALIZATION
-    dist        =       norm( target - traject(1,:) );
+    dist        =       norm( target - traject(1,:));
 
     % MINIMUM DISTANCE COMPUTATION
     for j = 2 : T
@@ -34,8 +34,11 @@ if ( strcmp( cmd, 'only' ) )
         if ( norm( target - traject(j,:) ) < dist )
             
             dist    =       norm( target - traject(j,:) );
+            display([dist j]);
             
         end
+        
+        display([norm( target - traject(j,:) ) j])
         
     end
 
