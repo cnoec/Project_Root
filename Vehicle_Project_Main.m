@@ -33,6 +33,8 @@ Y       =       y0;         % inertial Y position (m)
 Ux      =       20;         % body x velocity (m/s)
 beta    =       0;          % sideslip angle (rad)
 psi     =       atan(m);    % yaw angle (rad)
+if (track_number == 1) psi = psi + pi; 
+end
 r       =       0;          % yaw rate (rad/s)
 xi0     =       [X Y Ux beta psi r]';
 
@@ -44,12 +46,12 @@ boundary_number     =       1;
 tau                 =       0;
 d                   =       0;
 Ts                  =       1e-1; 
-T_end               =       10;
+T_end               =       25;
 n_iterations        =       T_end/Ts;
 
 u                                   =       ones(2*n_iterations,1);
 u(1:n_iterations)                   =       150;
-u(n_iterations+1:2*n_iterations)    =       5*pi/180;
+u(n_iterations+1:2*n_iterations)    =       3*pi/180;
 
 [xi, t_vec, end_check]              =       trajectory_generation(u, xi0, T_end, Ts);
 
@@ -60,8 +62,16 @@ for i=1:(n_states-1)
 end
 
 
-% ok adesso funziona, potete passare normalmente vettori colonna
-target = [ -40; 34.74];
-dist = wp_to_trajectory_distance( target, xi(1:2,:), 'only' )
+dist = zeros(n_wp,1);
+min_dist_point = zeros(n_wp,2);
+min_index = 1;
+
+for i=1:n_wp
+    [dist(i),min_dist_point(i,:),j] = wp_to_trajectory_distance( waypoints(i,1:2)', xi(1:2,min_index:end), 'only' );
+    min_index = min_index + j;
+    plot(min_dist_point(i,1),min_dist_point(i,2),'.b')
+    txt = {i};
+    text(min_dist_point(i,1)+1,min_dist_point(i,2)+1,txt);
+end
 
 

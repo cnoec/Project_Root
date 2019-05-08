@@ -55,8 +55,8 @@ outerBoundary = aux1;
 clear aux1 aux2 
 
 % plot of track
-plot(track)
-camroll(-90)
+%plot(track)
+%camroll(-90)
 figure
 plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
     outerBoundary(:,2),'black'),grid on

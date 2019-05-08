@@ -17,9 +17,9 @@ function [xi, t_vec, end_check] = trajectory_generation(u, xi_0, T_end, Ts)
 
 %% vettore del tempo
 
-path        =       pwd;
-addpath( '..\Model' );
-addpath( '..' );
+% path        =       pwd;
+% addpath( '..\Model' );
+% addpath( '..' );
 
 end_check = 1;
 t_vec = 0:Ts:(T_end-Ts);

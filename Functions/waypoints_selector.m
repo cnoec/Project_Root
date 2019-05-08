@@ -17,7 +17,7 @@ function [ waypoints ] = waypoints_selector(innerBoundary,outerBoundary, n_wp,N)
 
 waypoints = zeros(n_wp,3);
 
-count = n_wp-1;
+count = n_wp;
 
 for i=1:count
     x   = [ innerBoundary(floor(i*N/count),1,1)  outerBoundary(floor(i*N/count),1,1)]';
@@ -25,4 +25,6 @@ for i=1:count
     waypoints(i,1,1) =  mean(x);
     waypoints(i,2,1) =  mean(y);
     plot(waypoints(i,1,1),waypoints(i,2,1),'.g')
+    txt = {i};
+    text(waypoints(i,1,1)+1,waypoints(i,2,1)+1,txt);
 end

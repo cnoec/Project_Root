@@ -1,4 +1,4 @@
-function dist = wp_to_trajectory_distance( target, traject, cmd )
+function [dist, min_dist_point,min_index] = wp_to_trajectory_distance( target, traject, cmd )
 % wp_to_trajectory_distance computes the minimum distance between the
 % target points and the trajectory. It is also possible to set a string cmd
 % in order to compute the minimum distance from all the target points.
@@ -27,24 +27,28 @@ traject =       traject';
 T       =       length( traject(:,1) );
 N       =       length( target );
 
+min_dist_point = zeros(1,2);
+min_index = 1;
+
 if ( strcmp( cmd, 'only' ) )
 
     % INITIALIZATION
-    dist        =       norm( target - traject(1,:));
-
+    dist        =       (norm( target - traject(1,:)))^2;
+    
     % MINIMUM DISTANCE COMPUTATION
     for j = 2 : T
         
-        if ( norm( target - traject(j,:) ) < dist )
+        if ( (norm( target - traject(j,:) ))^2 < dist )
             
-            dist    =       norm( target - traject(j,:) );
-            
+            dist    =       (norm( target - traject(j,:) ))^2;
+            min_dist_point = traject(j,:);
+            min_index = j;
         end
         
     end
 
     
-elseif ( strmcp( cmd, 'all' ) )
+elseif ( strcmp( cmd, 'all' ) )
     
     dist        =       zeros( N,1 );
     
