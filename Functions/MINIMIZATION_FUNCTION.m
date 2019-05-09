@@ -14,11 +14,11 @@ min_dist_point = zeros(n_wp,2);
 min_index = 1;
 
 for i=1:n_wp
-    [dist(i),min_dist_point(i,:),j] = wp_to_trajectory_distance( waypoints(i,1:2)', xi(1:2,min_index:end), 'only' );
+    [dist(i),min_dist_point(i,:),j] = wp_to_trajectory_distance( waypoints(i,1:2)', xi(1:2,min_index:end), 'all' );
     min_index = min_index + j;
-%     plot(min_dist_point(i,1),min_dist_point(i,2),'.b')
-%     txt = {i};
-%     text(min_dist_point(i,1)+1,min_dist_point(i,2)+1,txt);
+    plot(min_dist_point(i,1),min_dist_point(i,2),'.b')
+    txt = {i};
+    text(min_dist_point(i,1)+1,min_dist_point(i,2)+1,txt);
 end
 
 sum_Delta = sum(dist);

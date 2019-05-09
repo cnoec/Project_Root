@@ -53,7 +53,7 @@ elseif ( strcmp( cmd, 'all' ) )
     dist        =       zeros( N,1 );
     
     % INITIALIZATION
-    for j = 0:N
+    for j = 2:N
         
         dist(j)     =       norm( target(j) - traject( 1,: ) );
         
@@ -61,11 +61,11 @@ elseif ( strcmp( cmd, 'all' ) )
     
     % MINIMUM DISTANCE COMPUTATION
     % first for cycle in order to run over all the target points
-    for j = 0 : N
+    for j = 2 : N
 
         % the second for cycle is needes in order to select for each target
         % point the minimum distance from the trajectory
-        for i = 0 : T
+        for i = 2 : T
             
             if ( norm( target(j) - traject(i,:) ) < dist(j) )
             

@@ -74,9 +74,12 @@ u(n_iterations+1:2*n_iterations)    =       3*pi/180;
 %     text(min_dist_point(i,1)+1,min_dist_point(i,2)+1,txt);
 % end
 
-% sum_Delta = MINIMIZATION_FUNCTION(u, xi0, T_end, Ts, waypoints, n_wp)
+  [dist(i),min_dist_point(i,:),j] = wp_to_trajectory_distance( waypoints(i,1:2)', xi(1:2,min_index:end), 'only' );
+ 
 
-uncons_NLP_opt(MINIM
+sum_Delta = MINIMIZATION_FUNCTION(u, xi0, T_end, Ts, waypoints, n_wp)
+
+%[u_opt, dist_opt, n_iter, ~]=uncons_NLP_opt(@(u_opt)MINIMIZATION_FUNCTION(u_opt, xi0, T_end, Ts, waypoints, n_wp),u,myoptimalset)
 
 
 
