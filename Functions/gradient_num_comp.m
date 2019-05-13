@@ -1,4 +1,4 @@
-function [y, gradient] = gradient_num_comp(fnc, xkr, method, dx)
+function [y,gradient] = gradient_num_comp(fnc, xkr, method, dx)
     %IT COMPUTE THE GRADIENT OF THE FUNCTION (TRANSPOSE OF THE JACOBIAN)
     %[y, gradient] = gradient_num_comp(fnc, xkr, method, dx)
     
@@ -16,6 +16,9 @@ if strcmp(method, 'FD')
         p(ind)=dx;
         p(ind-1)=0;
         gradient(ind,:) = (fnc(xkr+p)-fnc(xkr)).'/dx;
+%         disp(ind);
+%         disp('gradient');
+    
     end
     
     
