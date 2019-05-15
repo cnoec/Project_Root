@@ -63,39 +63,15 @@ end
 
 [u_opt,dist_opt,n_iter,~] = myfminunc(@(u_opt)deltasum(u_opt, xi0, T_end, Ts, waypoints, n_wp),u,myoptimalset);
 
-
+dist = wp_to_trajectory_distance( waypoints, xi(1:2,:),n_wp,n_states);
+ 
 % dist = zeros(n_wp,1);
 % min_dist_point = zeros(n_wp,2);
 % min_index = 1;
 % 
-% dist = wp_to_trajectory_distance( waypoints, xi(1:2,:),n_wp,n_states);
  
-
-
-% [y,grad] = gradient_num_comp( @(u_opt)MINIMIZATION_FUNCTION(u_opt,xi0,T_end,Ts,waypoints,n_wp),u,'FD',1e-2);
-
 % F   = fopen('prova.txt','w');
 % fprintf(F,'Gradient \n');
 % fprintf(F,'%f           %f \n',y,grad);
-
-
-
-% for i=1:n_wp
-%     [dist(i),min_dist_point(i,:),j] = wp_to_trajectory_distance( waypoints(i,1:2)', xi(1:2,:), 'only' );
-%     % min_index = min_index + j;
-%     plot(min_dist_point(i,1),min_dist_point(i,2),'.b')
-%     txt = {i};
-%     text(min_dist_point(i,1)+1,min_dist_point(i,2)+1,txt);
-% end
-    % min_index = min_index + j;
- 
-
-% distall = wp_to_trajectory_distance( waypoints(:,1:2)', xi, 'all' );
- 
-
-% sum_Delta = MINIMIZATION_FUNCTION(u, xi0, T_end, Ts, waypoints, n_wp)
-
-%[u_opt, dist_opt, n_iter, ~]=uncons_NLP_opt(@(u_opt)MINIMIZATION_FUNCTION(u_opt, xi0, T_end, Ts, waypoints, n_wp),u,myoptimalset)
-
 
 
