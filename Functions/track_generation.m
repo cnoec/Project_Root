@@ -22,15 +22,15 @@ function [track,innerBoundary,outerBoundary,N,x0,y0] = track_generation(track_nu
 % create and plot track
 
 if track_number == 1
-    track = circle_track()
+    track = circle_track();
 elseif track_number == 2
-    track = oval_track()
+    track = oval_track();
 elseif track_number == 3
-    track = random_track()
+    track = random_track();
 end
 
 % find inner and outer boundaries coordinates
-rb = roadBoundaries(track)
+rb = roadBoundaries(track);
 outerBoundary = rb{2};
 innerBoundary = rb{1};
         
