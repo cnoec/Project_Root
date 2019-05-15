@@ -32,13 +32,16 @@ weight = zeros(n_states,1);
 
 for i = 1:n_wp
     for j = 1:n_states
-         dist = norm(target(i,1:2) - traject(j,1:2))^2 + weight(j);
+         dist = norm(target(i,1:2) - traject(j,1:2)) + weight(j);
          if ( dist < dist_min(i) )
             dist_min(i) = dist;
             min_index = j;
          end
     end
     weight(1:min_index) = max_dist;
+%     plot(traject(min_index,1),traject(min_index,2),'.b')
+%     txt = {i};
+%     text(traject(min_index,1)+1,traject(min_index,2)+1,txt);
 end
   
 
