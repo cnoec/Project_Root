@@ -34,6 +34,7 @@ elseif strcmp(method,'FD')
     p(1,1)          =   dx;
     gradient(1,:)   =   (fun(xk+p)-fun(xk))'/dx;
     for ind = 2:n
+%         display(ind);
         p(ind-1,1)      =   0;
         p(ind,1)        =   dx;
         gradient(ind,:) =   (fun(xk+p)-fun(xk))'/dx;
