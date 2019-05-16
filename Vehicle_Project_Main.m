@@ -33,8 +33,13 @@ Y       =       y0;         % inertial Y position (m)
 Ux      =       20;         % body x velocity (m/s)
 beta    =       0;          % sideslip angle (rad)
 psi     =       atan(m);    % yaw angle (rad)
-if (track_number == 1) psi = psi + pi; 
+
+if (track_number == 1) 
+    
+    psi = psi + pi; 
+
 end
+
 r       =       0;          % yaw rate (rad/s)
 xi0     =       [X Y Ux beta psi r]';
 
