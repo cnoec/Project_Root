@@ -98,7 +98,7 @@ myoptions.BFGS_gamma  	=	1e-1;       % gamma factor for Powell's trick in
 myoptions.GN_funF       =	[];         % function providing the value of F
                                         % in Gauss-Newton method, assuming
                                         % f(x)=F(x)'*F(x)
-myoptions.GN_sigma      =	0;          % coefficient to ensure Hessian is 
+myoptions.GN_sigma      =	0.1;          % coefficient to ensure Hessian is 
                                         % positive definite in Gauss-Newton
                                         % method (H=GradF*GradF'+eye(n)*sigma)
 

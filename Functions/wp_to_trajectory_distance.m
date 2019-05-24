@@ -38,7 +38,7 @@ for i = 1:n_wp
             min_index = j;
          end
     end
-    weight(1:min_index) = max_dist;
+%     weight(1:min_index) = max_dist;
 %     plot(traject(min_index,1),traject(min_index,2),'.b')
 %     txt = {i};
 %     text(traject(min_index,1)+1,traject(min_index,2)+1,txt);

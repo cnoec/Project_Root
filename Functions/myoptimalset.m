@@ -1,4 +1,4 @@
-function myoptions = myoptimset
+function myoptions = myoptimalset
 % MYOPTIMSET Sets default options for user-developed nonlinear programming
 % routine, both unconstrained and constrained.
 %
@@ -53,14 +53,14 @@ function myoptions = myoptimset
 
 %% General options
 myoptions.display    	=	'Iter';     % Display iteration output
-myoptions.xsequence    	=	'off';      % Store sequence of points {xk}
+myoptions.xsequence    	=	'on';      % Store sequence of points {xk}
 myoptions.tolgrad    	=	1e-6;       % Termination tolerance on the norm
                                         % of the directional derivative
 myoptions.tolx          =	1e-12;      % Termination tolerance on the relative
                                         % change of optimization variables
 myoptions.tolfun        =	1e-12;      % Termination tolerance on the relative
                                         % improvement of the cost function
-myoptions.nitermax      =	50;         % Termination tolerance on the number of
+myoptions.nitermax      =	250;         % Termination tolerance on the number of
                                         % iterations
 myoptions.outputfcn     =	[];         % Handle for output function
 
@@ -80,7 +80,7 @@ myoptions.ls_beta       =	0.8;        % Beta scaling factor for
                                         % back-tracking line search
 myoptions.ls_c          =	0.1;        % c coefficient factor for 
                                         % back-tracking line search
-myoptions.ls_nitermax   =	20;         % max. number of back-tracking 
+myoptions.ls_nitermax   =	200;         % max. number of back-tracking 
                                         % line search iterations
 
 %% Quasi-Newton method options
@@ -98,7 +98,7 @@ myoptions.BFGS_gamma  	=	1e-1;       % gamma factor for Powell's trick in
 myoptions.GN_funF       =	[];         % function providing the value of F
                                         % in Gauss-Newton method, assuming
                                         % f(x)=F(x)'*F(x)
-myoptions.GN_sigma      =	0;          % coefficient to ensure Hessian is 
+myoptions.GN_sigma      =	1;          % coefficient to ensure Hessian is 
                                         % positive definite in Gauss-Newton
                                         % method (H=GradF*GradF'+eye(n)*sigma)
 myoptions.eps = 10e-16;

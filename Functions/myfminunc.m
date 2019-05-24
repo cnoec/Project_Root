@@ -31,11 +31,13 @@ n               =   length(x0);
 k               =   0;
 deltaxk_rel     =   1;
 deltaf_rel     	=   1;
+ F   = fopen('prova.txt','w');
+
 if ~isempty(myoptions.outputfcn)
     outputfun   =   myoptions.outputfcn;
 end
 if strcmp(myoptions.display,'Iter')
-    fprintf('Iteration       NormGrad          Cost      Rel. cost         Rel. x      Line-search\r')
+    fprintf(F,'Iteration       NormGrad          Cost      Rel. cost         Rel. x      Line-search\r');
 end
 
 xsequence           =   [];
@@ -54,7 +56,7 @@ if strcmp(myoptions.Hessmethod,'GN')    % Gauss-Newton method
     pk            	=   -Hk\gradfxk;
     
     if strcmp(myoptions.display,'Iter')
-        fprintf('%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
+        fprintf(F,'%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
             k,norm(gradfxk'*pk),fxk,deltaf_rel,deltaxk_rel,0)
     end
     if ~isempty(myoptions.outputfcn)
@@ -79,7 +81,7 @@ if strcmp(myoptions.Hessmethod,'GN')    % Gauss-Newton method
         pk                      =   -Hk\gradfxk;
 
         if strcmp(myoptions.display,'Iter')
-            fprintf('%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
+            fprintf(F,'%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
             k,norm(gradfxk'*pk),fxk,deltaf_rel,deltaxk_rel,niter_LS)
         end
         if ~isempty(myoptions.outputfcn)
@@ -95,7 +97,7 @@ elseif strcmp(myoptions.Hessmethod,'Exact')    % Exact Newton method
     pk                  =   -Hk\gradfxk;
     
     if strcmp(myoptions.display,'Iter')
-        fprintf('%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
+        fprintf(F,'%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
             k,norm(gradfxk'*pk),fxk,deltaf_rel,deltaxk_rel,0)
     end
     if ~isempty(myoptions.outputfcn)
@@ -116,7 +118,7 @@ elseif strcmp(myoptions.Hessmethod,'Exact')    % Exact Newton method
         pk                      =   -Hk\gradfxk;
 
         if strcmp(myoptions.display,'Iter')
-            fprintf('%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
+            fprintf(F,'%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
             k,norm(gradfxk'*pk),fxk,deltaf_rel,deltaxk_rel,niter_LS)
         end
         if ~isempty(myoptions.outputfcn)
@@ -133,8 +135,8 @@ elseif strcmp(myoptions.Hessmethod,'BFGS')    % BFGS method
     pk            	=   -Hk\gradfxk;
     
     if strcmp(myoptions.display,'Iter')
-        fprintf('%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
-            k,norm(gradfxk'*pk),fxk,deltaf_rel,deltaxk_rel,0)
+        fprintf(F,'%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
+            k,norm(gradfxk'*pk),fxk,deltaf_rel,deltaxk_rel,0);
     end
     if ~isempty(myoptions.outputfcn)
         outputfun(xk);
@@ -164,8 +166,8 @@ elseif strcmp(myoptions.Hessmethod,'BFGS')    % BFGS method
         pk                      =   -Hk\gradfxk;
 
         if strcmp(myoptions.display,'Iter')
-            fprintf('%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
-            k,norm(gradfxk'*pk),fxk,deltaf_rel,deltaxk_rel,niter_LS)
+            fprintf(F,'%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
+            k,norm(gradfxk'*pk),fxk,deltaf_rel,deltaxk_rel,niter_LS);
         end
         if ~isempty(myoptions.outputfcn)
             outputfun(xk);
@@ -180,8 +182,8 @@ elseif strcmp(myoptions.Hessmethod,'SD')    % Steepest Descent method
     pk            	=   -gradfxk;
     
     if strcmp(myoptions.display,'Iter')
-        fprintf('%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
-            k,norm(gradfxk'*pk),fxk,deltaf_rel,deltaxk_rel,0)
+        fprintf(F,'%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
+            k,norm(gradfxk'*pk),fxk,deltaf_rel,deltaxk_rel,0);
     end
     if ~isempty(myoptions.outputfcn)
         outputfun(xk);
@@ -202,8 +204,8 @@ elseif strcmp(myoptions.Hessmethod,'SD')    % Steepest Descent method
         pk                      =   -gradfxk;
 
         if strcmp(myoptions.display,'Iter')
-            fprintf('%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
-            k,norm(gradfxk'*pk),fxk,deltaf_rel,deltaxk_rel,niter_LS)
+            fprintf(F,'%9.0f    %7.5e   %6.5e    %6.5e    %6.5e             %4.0f\r',...
+            k,norm(gradfxk'*pk),fxk,deltaf_rel,deltaxk_rel,niter_LS);
         end
         if ~isempty(myoptions.outputfcn)
             outputfun(xk);
@@ -220,22 +222,22 @@ fxstar  =   fxk;
 if norm(gradfxk'*pk) <= myoptions.tolgrad
     exitflag    =   1;
     if strcmp(myoptions.display,'Iter')
-        fprintf('Local minimum possible, directional derivative smaller than tolerance\r')
+        fprintf(F,'Local minimum possible, directional derivative smaller than tolerance\r');
     end
 elseif k >= myoptions.nitermax
     exitflag    =   -1;
     if strcmp(myoptions.display,'Iter')
-        fprintf('Maximum number of iterations reached\r')
+        fprintf(F,'Maximum number of iterations reached\r');
     end
 elseif deltaxk_rel <= myoptions.tolx
     exitflag    =   2;
     if strcmp(myoptions.display,'Iter')
-        fprintf('Local minimum possible, relative step size smaller than tolerance\r')
+        fprintf(F,'Local minimum possible, relative step size smaller than tolerance\r');
     end
 elseif deltaf_rel <= myoptions.tolfun
     exitflag    =   3;
     if strcmp(myoptions.display,'Iter')
-        fprintf('Local minimum possible, relative cost decrease smaller than tolerance\r')
+        fprintf(F,'Local minimum possible, relative cost decrease smaller than tolerance\r');
     end
 end
     

@@ -16,7 +16,7 @@ addpath('Model');
 % track_number = 2 -> OVAL TRACK
 % track_number = 3 -> RANDOM TRACK
 
-track_number = 3;
+track_number = 2;
 [~,outerBoundary,innerBoundary,N,x0,y0] = track_generation(track_number);
 
 n_wp = 30;
@@ -51,31 +51,48 @@ boundary_number     =       1;
 tau                 =       0;
 d                   =       0;
 Ts                  =       1e-1; 
-T_end               =       200;
+T_end               =       25;
 n_iterations        =       T_end/Ts;
 
-u                                   =       ones(2*n_iterations,1);
-u(1:n_iterations)                   =       100;
-u(n_iterations+1:2*n_iterations)    =       0*pi/180;
+% u                                   =       ones(2*n_iterations,1);
+% u(1:n_iterations)                   =       100;
+% u(n_iterations+1:2*n_iterations)    =       0*pi/180;
 
-[xi, t_vec, end_check]              =       trajectory_generation(u, xi0, T_end, Ts);
+u_d                                 =       ones(n_iterations,1)*3*pi/180;
+
+u_T                                 =       ones(n_iterations,1)*100;
+
+[xi, t_vec, end_check]              =       trajectory_generation([u_T;u_d], xi0, T_end, Ts);
 
 n_states                            =       length(xi);
 
-[u_opt,dist_opt,n_iter,~] = myfminunc(@(u_opt)deltasum(u_opt, xi0, T_end, Ts, waypoints, n_wp),u,myoptimalset);
+[u_opt,dist_opt,n_iter,~,seq] = myfminunc(@(u_opt)(deltasum(u_opt, u_T ,xi0, T_end, Ts, waypoints, n_wp)...
+                                ),u_d,myoptimalset);
 
-[xi, ~, ~]    = trajectory_generation(u_opt, xi0, T_end, Ts);
+[xi, ~, ~]    = trajectory_generation([u_T;u_opt], xi0, T_end, Ts);
 
 figure
 plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
     outerBoundary(:,2),'black'),grid on
 axis equal
+
 hold on
 
-for i=1:(n_states-1)
-   plot([xi(1,i) xi(1,i+1)],[xi(2,i) xi(2,i+1)],'*r');
+% for i=1:(n_states-1)
+%    plot([xi(1,i) xi(1,i+1)],[xi(2,i) xi(2,i+1)],'.r');
+% end
+
+for i = 1:min(size(seq))
+   
+    u_check = seq(:,i);
+    u = [u_T; u_check];
+    [xi_1, ~, ~]              =       trajectory_generation(u, xi0, T_end, Ts);
+    plot(xi_1(1,:), xi_1(2,:),'.');grid;
+    pause;
+    hold on
 end
-%  
+
+%
 % dist = wp_to_trajectory_distance( waypoints, xi(1:2,:),n_wp,n_states);
 
 % dist = zeros(n_wp,1);
@@ -86,4 +103,4 @@ end
 % fprintf(F,'Gradient \n');
 % fprintf(F,'%f           %f \n',y,grad);
 
-
+%%
