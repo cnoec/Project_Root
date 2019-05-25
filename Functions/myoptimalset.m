@@ -56,21 +56,21 @@ myoptions.display    	=	'Iter';     % Display iteration output
 myoptions.xsequence    	=	'on';      % Store sequence of points {xk}
 myoptions.tolgrad    	=	1e-6;       % Termination tolerance on the norm
                                         % of the directional derivative
-myoptions.tolx          =	1e-12;      % Termination tolerance on the relative
+myoptions.tolx          =	1e-20;      % Termination tolerance on the relative
                                         % change of optimization variables
-myoptions.tolfun        =	1e-12;      % Termination tolerance on the relative
+myoptions.tolfun        =	1e-20;      % Termination tolerance on the relative
                                         % improvement of the cost function
-myoptions.nitermax      =	250;         % Termination tolerance on the number of
+myoptions.nitermax      =	1000;         % Termination tolerance on the number of
                                         % iterations
 myoptions.outputfcn     =	[];         % Handle for output function
 
 %% Differentiation options
-myoptions.gradmethod  	=	'FD';       % Method for gradient computation
+myoptions.gradmethod  	=	'CD';       % Method for gradient computation
                                         % FD    =   Forward Differences
                                         % CD    =   Central Differences
                                         % IM    =   Imaginary-part trick
                                         % UP    =   User Provided
-myoptions.graddx        =	2^-26;      % Perturbation for gradient computation
+myoptions.graddx        =	2^-17;      % Perturbation for gradient computation
                                         % use 2^-26 for FD
                                         % use 2^-17 for CD
                                         
@@ -80,7 +80,7 @@ myoptions.ls_beta       =	0.8;        % Beta scaling factor for
                                         % back-tracking line search
 myoptions.ls_c          =	0.1;        % c coefficient factor for 
                                         % back-tracking line search
-myoptions.ls_nitermax   =	200;         % max. number of back-tracking 
+myoptions.ls_nitermax   =	300;         % max. number of back-tracking 
                                         % line search iterations
 
 %% Quasi-Newton method options
