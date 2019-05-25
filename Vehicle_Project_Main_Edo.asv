@@ -104,27 +104,23 @@ grid on
 
 %% plotting delta optimization
 
-sequence_plot = sequence_delta;
+sequence_plot = sequence_delta
 
-
-
-for i=150:size(sequence_plot,2)
-    i
+for i=1:size(sequence_plot,2)
     figure('Name', 'Sequence', 'NumberTitle', 'off' )
     plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
     outerBoundary(:,2),'black')
-
     hold on
     line([innerBoundary(1,1,1) outerBoundary(1,1,1)],...
      [innerBoundary(1,2,1) outerBoundary(1,2,1)],'color','y','linewidth', 7) 
     plot(waypoints(:,1), waypoints(:,2),'*b')
     axis equal
     grid on
+    hold on
     u_plot = [Torque; sequence_plot(:,i)];
     [xi_delta, ~, end_check] = trajectory_generation(u_plot, xi0, T_end, Ts);
     plot(xi_delta(1,:), xi_delta(2,:),'.');
     pause;
-    close all
 end
 
 
