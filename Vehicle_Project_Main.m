@@ -8,6 +8,7 @@ clc
 path        =           pwd;
 addpath('Functions');
 addpath('Model');
+addpath('Mat_Data\');
 
 %% track generation and waypoints positioning
 
@@ -58,7 +59,13 @@ n_iterations        =       T_end/Ts;
 % u(1:n_iterations)                   =       100;
 % u(n_iterations+1:2*n_iterations)    =       0*pi/180;
 
-u_d                                 =       ones(n_iterations,1)*0*pi/180;
+u_d                                 =       ones(n_iterations,1)*3*pi/180;
+
+% load('u_opt_SDZ_notolerances.mat');
+% 
+% u_d = u_opt;
+% 
+% clear u_opt
 
 u_T                                 =       ones(n_iterations,1)*100;
 
@@ -87,12 +94,18 @@ end
 figure
 
 for i = 1:min(size(seq))
-   
+    figure
+    plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
+        outerBoundary(:,2),'black'),grid on
+    axis equal
+    hold on
     u_check = seq(:,i);
     u = [u_T; u_check];
     [xi_1, ~, ~]              =       trajectory_generation(u, xi0, T_end, Ts);
     plot(xi_1(1,:), xi_1(2,:),'.');grid;
-    hold on
+    title(i);
+    pause(0.5)
+    close all
 end
 
 %
