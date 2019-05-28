@@ -72,5 +72,8 @@ hold on
 x0  = mean([innerBoundary(1,1,1) outerBoundary(1,1,1)]');
 y0  = mean([innerBoundary(1,2,1) outerBoundary(1,2,1)]');
 
+innerBoundary(:,3) = [];
+outerBoundary(:,3) = [];
+
 end
  
