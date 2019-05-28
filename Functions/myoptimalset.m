@@ -65,12 +65,12 @@ myoptions.nitermax      =	1000;         % Termination tolerance on the number of
 myoptions.outputfcn     =	[];         % Handle for output function
 
 %% Differentiation options
-myoptions.gradmethod  	=	'FD';       % Method for gradient computation
+myoptions.gradmethod  	=	'CD';       % Method for gradient computation
                                         % FD    =   Forward Differences
                                         % CD    =   Central Differences
                                         % IM    =   Imaginary-part trick
                                         % UP    =   User Provided
-myoptions.graddx        =	2^-26;      % Perturbation for gradient computation
+myoptions.graddx        =	2^-17;      % Perturbation for gradient computation
                                         % use 2^-26 for FD
                                         % use 2^-17 for CD
                                         

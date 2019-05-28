@@ -9,7 +9,9 @@ n_states = length(xi);
 
 dist = wp_to_trajectory_distance( waypoints, xi(1:2,:),n_wp,n_states);
 
-sum_Delta = sum(dist)/1e5;
+% sum_Delta = sum(dist)/1e5;
+
+sum_Delta = dist'*dist/1e7;
 
 end
 
