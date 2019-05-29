@@ -46,7 +46,7 @@ xi0     =       [X Y Ux beta psi r]';
 
 plot(X,Y,'*r');
 
-%% simulation
+%% Optimization
 
 boundary_number     =       1;
 tau                 =       0;
@@ -58,6 +58,13 @@ n_iterations        =       T_end/Ts;
 u                                   =       ones(2*n_iterations,1);
 u(1:n_iterations)                   =       100;
 u(n_iterations+1:2*n_iterations)    =       3*pi/180;
+
+% for i = 1:n_iterations
+%     
+%     u(i)                    =       100*rand();
+%     u(n_iterations+i)       =       3*pi/180*rand();
+%     
+% end
 
 % u_d                                 =       ones(n_iterations,1)*3*pi/180;
 
@@ -79,7 +86,8 @@ toc
                             
 [xi, ~, ~]    = trajectory_generation(u_opt, xi0, T_end, Ts);
 
-%%
+%% PLOTS
+
 figure
 plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
     outerBoundary(:,2),'black'),grid on
