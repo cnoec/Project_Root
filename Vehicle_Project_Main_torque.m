@@ -55,30 +55,31 @@ Ts                  =       1e-1;
 T_end               =       25;
 n_iterations        =       T_end/Ts;
 
-% u                                   =       ones(2*n_iterations,1);
-% u(1:n_iterations)                   =       100;
-% u(n_iterations+1:2*n_iterations)    =       0*pi/180;
+u                                   =       ones(2*n_iterations,1);
+u(1:n_iterations)                   =       100;
+u(n_iterations+1:2*n_iterations)    =       3*pi/180;
 
-u_d                                 =       ones(n_iterations,1)*3*pi/180;
+% u_d                                 =       ones(n_iterations,1)*3*pi/180;
 
 % load('u_opt_20190528.mat');
 % 
 % u_d = u_opt();
 % clear u_opt
 
-u_T                                 =       ones(n_iterations,1)*100;
+% u_T                                 =       ones(n_iterations,1)*100;
 
-[xi, t_vec, end_check]              =       trajectory_generation([u_T;u_d], xi0, T_end, Ts);
+[xi, t_vec, end_check]              =       trajectory_generation(u, xi0, T_end, Ts);
 
 n_states                            =       length(xi);
 
 tic
-[u_opt,dist_opt,n_iter,~,seq]       = myfminunc(@(u_opt)(deltasum(u_opt, u_T ,xi0, T_end, Ts, waypoints, n_wp)...
-                                    ),u_d,myoptimalset);
+[u_opt,dist_opt,n_iter,~,seq]       = myfminunc(@(u)(deltasum(u,xi0, T_end, Ts, waypoints, n_wp)...
+                                    ),u,myoptimalset);
 toc
                             
-[xi, ~, ~]    = trajectory_generation([u_T;u_opt], xi0, T_end, Ts);
+[xi, ~, ~]    = trajectory_generation(u_opt, xi0, T_end, Ts);
 
+%%
 figure
 plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
     outerBoundary(:,2),'black'),grid on
@@ -99,8 +100,8 @@ for i = 1:min(size(seq))
     axis equal
     hold on
     u_check                     =       seq(:,i);
-    u = [u_T; u_check];
-    [xi_1, ~, ~]                =       trajectory_generation(u, xi0, T_end, Ts);
+%     u = [u_T; u_check];
+    [xi_1, ~, ~]                =       trajectory_generation(u_check, xi0, T_end, Ts);
     plot(xi_1(1,:), xi_1(2,:),'.');grid;
     title(i);
     pause(0.5)
