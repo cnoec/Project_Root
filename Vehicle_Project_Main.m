@@ -66,7 +66,7 @@ u_d                                 =       ones(n_iterations,1)*3*pi/180;
 % u_d = u_opt();
 % clear u_opt
 
-u_T                                 =       ones(n_iterations,1)*100;
+u_T                                 =       ones(n_iterations,1)*150;
 
 [xi, t_vec, end_check]              =       trajectory_generation([u_T;u_d], xi0, T_end, Ts);
 
