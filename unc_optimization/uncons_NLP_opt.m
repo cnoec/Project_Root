@@ -7,6 +7,7 @@ x_opt = 0;
 exit_flag = 0;
 if strcmp(options.display,'on')
     F = fopen('unc_iterations.txt','w');
+    disp('iterazionedio');
     fprintf(F,'Iteration       NormGrad          Cost      Rel. cost         Rel. x      Line-search interations\r');
 end
 

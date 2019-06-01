@@ -9,6 +9,7 @@ path        =           pwd;
 addpath('Functions');
 addpath('Model');
 addpath('Mat_Data\');
+addpath('unc_optimization');
 
 %% track generation and waypoints positioning
 
@@ -80,13 +81,14 @@ u(n_iterations+1:2*n_iterations)    =       3*pi/180;
 n_states                            =       length(xi);
 
 tic
-[u_opt,dist_opt,n_iter,~,seq]       = myfminunc(@(u)(deltasum(u,xi0, T_end, Ts, waypoints, n_wp)...
-                                    ),u,myoptimalset);
+% [u_opt,dist_opt,n_iter,~,seq]       = myfminunc(@(u)(deltasum(u,xi0, T_end, Ts, waypoints, n_wp)...
+%                                     ),u,myoptimalset);
+[u_opt,exitflag, debug] = uncons_NLP_opt(@(u)deltasum(u,xi0, T_end, Ts, waypoints, n_wp),u,unc_optimalset)
 toc
                             
 [xi, ~, ~]    = trajectory_generation(u_opt, xi0, T_end, Ts);
 
-%% PLOTS
+%% optimal trajectory plot
 
 figure
 plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
@@ -99,9 +101,9 @@ for i=1:(n_states-1)
    plot([xi(1,i) xi(1,i+1)],[xi(2,i) xi(2,i+1)],'.r');
 end
 
-figure
+%% whole sequence plote
 
-for i = 1:min(size(seq))
+for i = 1:size(debug.seq,2)
     figure
     plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
         outerBoundary(:,2),'black'),grid on
