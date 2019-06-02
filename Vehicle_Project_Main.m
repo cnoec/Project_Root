@@ -79,7 +79,7 @@ toc
                             
 [xi, ~, ~]    = trajectory_generation([u_T;u_opt], xi0, T_end, Ts);
 %%
-figure
+figure 
 plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
     outerBoundary(:,2),'black'),grid on
 axis equal

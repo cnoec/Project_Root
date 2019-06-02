@@ -57,7 +57,7 @@ T_end               =       25;
 n_iterations        =       T_end/Ts;
 
 u                                   =       ones(2*n_iterations,1);
-u(1:n_iterations)                   =       100;
+u(1:n_iterations)                   =       100/5000;
 u(n_iterations+1:2*n_iterations)    =       3*pi/180;
 
 % for i = 1:n_iterations

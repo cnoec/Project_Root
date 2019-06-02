@@ -1,7 +1,6 @@
 function [sum_Delta] = deltasum(u, xi0, T_end, Ts, waypoints, n_wp)
 
-% u = [u_T;
-%      u_d;];
+u(1:Tend/Ts) = u(1:Tend/Ts)*5000;
 
 [xi, ~, ~] = trajectory_generation(u, xi0, T_end, Ts);
 
