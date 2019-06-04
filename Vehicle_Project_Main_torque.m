@@ -9,7 +9,9 @@ path        =           pwd;
 addpath('Functions');
 addpath('Model');
 addpath('Mat_Data\');
-addpath('unc_optimization');
+addpath('Functions\unc_optimization');
+addpath('Functions\con_optimization');
+
 
 %% track generation and waypoints positioning
 
@@ -57,7 +59,7 @@ T_end               =       25;
 n_iterations        =       T_end/Ts;
 
 u                                   =       ones(2*n_iterations,1);
-u(1:n_iterations)                   =       100/5000;
+u(1:n_iterations)                   =       100/2000;
 u(n_iterations+1:2*n_iterations)    =       3*pi/180;
 
 % for i = 1:n_iterations
@@ -103,6 +105,8 @@ end
 
 %% whole sequence plote
 
+seq = debug.seq
+
 for i = 1:size(debug.seq,2)
     figure
     plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
@@ -114,7 +118,7 @@ for i = 1:size(debug.seq,2)
     [xi_1, ~, ~]                =       trajectory_generation(u_check, xi0, T_end, Ts);
     plot(xi_1(1,:), xi_1(2,:),'.');grid;
     title(i);
-    pause(0.5)
+    pause(5)
 %     close
 end
 
