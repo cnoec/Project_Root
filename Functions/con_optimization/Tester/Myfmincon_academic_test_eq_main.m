@@ -103,7 +103,7 @@ myoptions.nitermax      =	1e3;
 myoptions.xsequence     =	'on';
 
 % Run solver
-[xstar,fxstar,niter,exitflag,xsequence] = con_NLP_opt(@(x)Simple_test_eq(x,c_cost,a_eq,a_ineq,b_ineq),x0,A,b,C,d,1,1,myoptions,1);
+[xstar,fxstar,niter,exitflag,xsequence] = con_NLP_opt(@(x)Simple_test_eq(x,c_cost,a_eq,a_ineq,b_ineq),x0,A,b,C,d,1,1,myoptions,"prova");
 
 % Plot
 figure(1),plot(xsequence(1,:),xsequence(2,:),'-*')

@@ -54,25 +54,27 @@ k                   =   0;
 deltaxk_rel         =   1;
 deltaf_rel          =   1;
 
-if (filename == 1)
-    
-    F               =   filename;
-    
-else
+
+if isstring(filename)
     
     F               =   fopen(filename+".txt",'w');
+    
+
+elseif (filename == 1)
+    
+    F               =   filename;
     
 end
 
 % Note that we need a lambda for each equality contraint, which means that
 % we have to consider p nonlinear constraints plus the linear ones
-lambdak             =   zeros( p + min(size(A)), 1 );
-sigmak              =   zeros( p + min(size(A)), 1 );
+lambdak             =   zeros( p + size(A,1), 1 );
+sigmak              =   zeros( p + size(A,1), 1 );
 
 % Note that we need a mu for each equality contraint, which means that
 % we have to consider q nonlinear constraints plus the linear ones
-muk                 =   zeros( q + min(size(C)), 1 );
-tauk                =   zeros( q + min(size(C)), 1 );
+muk                 =   zeros( q + size(C,1), 1 );
+tauk                =   zeros( q + size(C,1), 1 );
 
 eq_con_max          =   0;
 ineq_con_min        =   0;
@@ -179,17 +181,11 @@ if strcmp(con_options.Hessmethod,'BFGS')
     end
     
     %Iterations
-%     while  norm(gradLagr)                   > con_options.tolgrad   &&  ...
-%            k                                < con_options.nitermax  &&  ...
-%            deltaxk_rel                      > con_options.tolx      &&  ...
-%            deltaf_rel                       > con_options.tolfun    ||  ...
-%            (max(eq_con_max,-ineq_con_min)   > con_options.tolconstr) %end
-
-    while norm(gradLagr) > con_options.tolgrad...
-                && k < con_options.nitermax...
-                && deltaxk_rel > con_options.tolx...
-                && deltaf_rel > con_options.tolfun...
-                || (max(eq_con_max,-ineq_con_min) > con_options.tolconstr)
+    while  norm(gradLagr)                   > con_options.tolgrad   &&  ...
+           k                                < con_options.nitermax  &&  ...
+           deltaxk_rel                      > con_options.tolx      &&  ...
+           deltaf_rel                       > con_options.tolfun    ||  ...
+           (max(eq_con_max,-ineq_con_min)   > con_options.tolconstr) %end
         
         %Compute the new search direction
         [pk,~,~,~,LagMult]      =   quadprog(Hk,gradfxk,-gradhk',hxk,gradgk',...
@@ -200,10 +196,8 @@ if strcmp(con_options.Hessmethod,'BFGS')
         delta_mu                =   mu_tilde - muk;
         
         %Update merit function weights
-        sigmak                  =   max( abs( lambda_tilde ), ( sigmak + ...
-                                         abs( lambda_tilde ) )/2 );
-        muk                     =   max( abs( mu_tilde ), ( tauk + ...
-                                         abs( mu_tilde ) )/2 );
+        sigmak                  =   max(abs(lambda_tilde),(sigmak+abs(lambda_tilde))/2);
+        tauk                    =   max(abs(mu_tilde),(tauk+abs(mu_tilde))/2);
         T1_fun                  =   @(x)merit_function( fun,x,A,b,C,d,p,q,...
                                                         sigmak,tauk,'BFGS' );
         T1k                     =   T1_fun(xk);
@@ -409,7 +403,7 @@ end
 
 %%
 
-if ~( filename == 1 )
+if isstring(filename)
     
     fclose(F);
     
