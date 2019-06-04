@@ -11,6 +11,8 @@ addpath('Model');
 addpath('Mat_Data\');
 addpath('Functions\unc_optimization');
 addpath('Functions\con_optimization');
+addpath('Functions\track');
+addpath('Functions\cost_function');
 
 
 %% track generation and waypoints positioning
@@ -85,8 +87,8 @@ n_states                            =       length(xi);
 tic
 % [u_opt,dist_opt,n_iter,~,seq]       = myfminunc(@(u)(deltasum(u,xi0, T_end, Ts, waypoints, n_wp)...
 %                                     ),u,myoptimalset);
-[u_opt,exitflag, debug] = uncons_NLP_opt(@(u)deltasum(u,xi0, T_end, Ts, waypoints, n_wp),u,unc_optimalset)
-toc
+[u_opt,exitflag, debug] = uncons_NLP_opt(@(u)deltasum(u,xi0, T_end, Ts, waypoints, n_wp),u,unc_optimalset);
+unc_time = toc
                             
 [xi, ~, ~]    = trajectory_generation(u_opt, xi0, T_end, Ts);
 
