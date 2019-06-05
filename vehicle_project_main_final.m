@@ -13,13 +13,13 @@ addpath('Functions\cost_function');
 
 %% Run the initialization
 
-%run('Vehicle_Project_main_torque.m');
+%run('vehicle_project_UNCONSTRAINED.m');
 load('20190528_u_opt_converge');
 
 u_0         =   u_opt;
 clear u_opt
 
-%% Initial guess
+%% Initialization
 
 run('initial_guess_setting');
 
@@ -39,7 +39,6 @@ end
 %% Constrained algorithm setting
 
 myoptions               =   con_optimalset;
-myoptions.Hessmethod  	=	'BFGS';
 myoptions.gradmethod  	=	'CD';
 myoptions.graddx        =	2^-17;
 myoptions.tolgrad    	=	1e-8;

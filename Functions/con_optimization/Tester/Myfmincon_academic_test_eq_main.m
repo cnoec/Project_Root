@@ -8,7 +8,7 @@ close all
 clc
 
 addpath('Prof');
-addpath('SDZ');
+addpath('..\');
 
 %% Initialize optimization variables
 x0             	=   [-4;-1];
@@ -83,7 +83,9 @@ myoptions.nitermax      =	1e3;
 myoptions.xsequence     =	'on';
 
 % Run solver
+tic
 [xstar,fxstar,niter,exitflag,xsequence] = myfmincon(@(x)Simple_test_eq(x,c_cost,a_eq,a_ineq,b_ineq),x0,A,b,C,d,1,1,myoptions);
+prof_t = toc;
 
 % Plot
 figure(1),plot(xsequence(1,:),xsequence(2,:),'-*')
@@ -102,8 +104,10 @@ myoptions.ls_nitermax   =	1e2;
 myoptions.nitermax      =	1e3;
 myoptions.xsequence     =	'on';
 
+tic
 % Run solver
-[xstar,fxstar,niter,exitflag,xsequence] = con_NLP_opt(@(x)Simple_test_eq(x,c_cost,a_eq,a_ineq,b_ineq),x0,A,b,C,d,1,1,myoptions,"prova");
+[xstar,fxstar,niter,exitflag,xsequence] = con_NLP_opt(@(x)Simple_test_eq(x,c_cost,a_eq,a_ineq,b_ineq),x0,A,b,C,d,1,1,myoptions,1);
+SDZ_t = toc;
 
 % Plot
 figure(1),plot(xsequence(1,:),xsequence(2,:),'-*')

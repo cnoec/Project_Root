@@ -10,16 +10,19 @@ dist = wp_to_trajectory_distance( waypoints, xi(1:2,:),n_wp,n_states);
 
 % sum_Delta = sum(dist)/1e5;
 
-f = dist'*dist/1e7;
+F = dist'*dist/1e7;
 
 g1 = xi(1,end) - xi(1,1);
 g2 = xi(2,end) - xi(2,1);
 
-g = [g1;g2];
+g = [g1;
+     g2];
 
 h = [];
 
-v = [f;g;h;];
+v = [F;
+     g;
+     h];
 
 end
 

@@ -104,237 +104,231 @@ if strcmp(con_options.xsequence,'on')
 end
 
 
-%% Iterations
+%% Iterations - BFGS method
 
-if strcmp(con_options.Hessmethod,'BFGS')
-    
-    %Cost and constraints computation + their gradients
-    xk              =   x0;
-    Hk              =   1e-4*eye(n);
-    [Vk,gradVk]     =   gradient_num_comp(fun,x0,con_options.gradmethod,con_options.graddx);
-    fxk             =   Vk(1:end-p-q,1); %Note that as input this algorithm 
-                                         %takes the cost function and the 
-                                         %nonlinear functions defining inequality and
-                                         %equality constraints, so we need
-                                         %to assign to the cost function
-                                         %only the cost function part.
-    gradfxk         =   gradVk(:,1:end-p-q);
-    
+%Cost and constraints computation + their gradients
+xk              =   x0;
+Hk              =   1e-4*eye(n);
+[Vk,gradVk]     =   gradient_num_comp(fun,x0,con_options.gradmethod,con_options.graddx);
+fxk             =   Vk(1:end-p-q,1); %Note that as input this algorithm 
+                                     %takes the cost function and the 
+                                     %nonlinear functions defining inequality and
+                                     %equality constraints, so we need
+                                     %to assign to the cost function
+                                     %only the cost function part.
+gradfxk         =   gradVk(:,1:end-p-q);
+
+if(~isempty( A )) %This if is needed to understand if we also have linear eq. constraints
+
+    gxk         =   [A*xk-b;
+                     Vk(end-p-q+1:end-q,1)];
+    gradgk      =   [A',gradVk(:,end-p-q+1:end-q,1)];
+
+else
+
+    gxk         =   Vk(end-p-q+1:end-q,1);
+    gradgk      =   gradVk(:,end-p-q+1:end-q,1);
+
+end
+
+if(~isempty( C )) %This if is needed to understand if we also have linear ineq. constraints
+
+    hxk         =   [C*xk-d;
+                     Vk(end-q+1:end,1)];
+    gradhk      =   [C',gradVk(:,end-q+1:end,1)];
+
+else
+
+    hxk         =   Vk(end-q+1:end,1);
+    gradhk      =   gradVk(:,end-q+1:end,1);
+
+end
+
+% Lagrange function gradient computation
+gradLagr        =   gradfxk-gradgk*lambdak-gradhk*muk;
+
+% Worst-case equality and inequality constraints computation (for feedback and termination conditions)
+if ~isempty(gxk)
+
+    eq_con_max  =   max( abs( gxk ) );
+
+end
+
+if ~isempty(hxk)
+
+    ineq_con_min=   min(hxk);
+
+end
+
+% Feedback and output function
+if strcmp(con_options.display,'Iter')
+    if ineq_con_min<=0 && sign(ineq_con_min)==-1
+        fprintf(F,'%9.0f    %7.5e   %6.5e   %6.5e   %6.5e   %6.5e    %6.5e            %4.0f\r',...
+            k,norm(gradLagr),fxk,eq_con_max,ineq_con_min,deltaf_rel,deltaxk_rel,0);
+    else
+        fprintf(F,'%9.0f    %7.5e   %6.5e   %6.5e    %6.5e   %6.5e    %6.5e           %4.0f\r',...
+            k,norm(gradLagr),fxk,eq_con_max,ineq_con_min,deltaf_rel,deltaxk_rel,0);
+    end
+end
+
+%Store sequence of optimization variables at each iteration
+if ~isempty(con_options.outputfcn)
+
+    outputfun(xk);
+
+end
+
+%Iterations
+while  norm(gradLagr)                   > con_options.tolgrad   &&  ...
+       k                                < con_options.nitermax  &&  ...
+       deltaxk_rel                      > con_options.tolx      &&  ...
+       deltaf_rel                       > con_options.tolfun    ||  ...
+       (max(eq_con_max,-ineq_con_min)   > con_options.tolconstr) %end
+
+    %Compute the new search direction
+    [pk,~,~,~,LagMult]      =   quadprog(Hk,gradfxk,-gradhk',hxk,gradgk',...
+                                         -gxk,[],[],[],con_options.QPoptions);
+    lambda_tilde            =   -LagMult.eqlin;
+    mu_tilde                =   LagMult.ineqlin;
+    delta_lambda            =   lambda_tilde - lambdak;
+    delta_mu                =   mu_tilde - muk;
+
+    %Update merit function weights
+    sigmak                  =   max(abs(lambda_tilde),(sigmak+abs(lambda_tilde))/2);
+    tauk                    =   max(abs(mu_tilde),(tauk+abs(mu_tilde))/2);
+    T1_fun                  =   @(x)merit_function( fun,x,A,b,C,d,p,q,...
+                                                    sigmak,tauk,'BFGS' );
+    T1k                     =   T1_fun(xk);
+
+    %Directional derivative computation
+    ind_h_violated          =   hxk<=0; %We save the positions of violated
+                                        %inequality constraints
+    gradhk_violated         =   gradhk(:,ind_h_violated);
+    tauk_violated           =   tauk(ind_h_violated,1);
+    DT1k                    =   gradfxk'*pk-sigmak'*abs( gxk )-...  %In this way we'll obtain a directional derivative 
+                                tauk_violated'*gradhk_violated'*pk; %which weights also the violated constraints
+
+    %Line search with the merit function
+    [xkp1,fxkp1,niter_LS,tk]=   LS_merit_function(T1_fun,T1k,DT1k,xk,pk,...
+                                                  con_options.ls_tkmax,...
+                                                  con_options.ls_beta,...
+                                                  con_options.ls_c,...
+                                                  con_options.ls_nitermax);
+    deltaxk_rel             =   norm(xkp1-xk)/max(eps,norm(xk));
+    deltaf_rel              =   abs(fxkp1-fxk)/max(eps,abs(fxk));
+    lambdakp1               =   lambdak+tk*delta_lambda;
+    mukp1                   =   muk+tk*delta_mu;
+
+    %NEW Cost and constraints computation + their gradients
+    [Vkp1,gradVkp1] =   gradient_num_comp(fun,xkp1,con_options.gradmethod,con_options.graddx);
+    fxkp1           =   Vkp1(1:end-p-q,1); %Note that as input this algorithm 
+                                           %takes the cost function and the 
+                                           %nonlinear functions defining inequality and
+                                           %equality constraints, so we need
+                                           %to assign to the cost function
+                                           %only the cost function part.
+    gradfxkp1       =   gradVkp1(:,1:end-p-q);
+
     if(~isempty( A )) %This if is needed to understand if we also have linear eq. constraints
-        
-        gxk         =   [A*xk-b;
-                         Vk(end-p-q+1:end-q,1)];
-        gradgk      =   [A',gradVk(:,end-p-q+1:end-q,1)];
-        
+
+        gxkp1       =   [A*xkp1-b;
+                         Vkp1(end-p-q+1:end-q,1)];
+        gradgkp1    =   [A',gradVkp1(:,end-p-q+1:end-q,1)];
+
     else
-        
-        gxk         =   Vk(end-p-q+1:end-q,1);
-        gradgk      =   gradVk(:,end-p-q+1:end-q,1);
-        
+
+        gxkp1       =   Vkp1(end-p-q+1:end-q,1);
+        gradgkp1    =   gradVkp1(:,end-p-q+1:end-q,1);
+
     end
-    
+
     if(~isempty( C )) %This if is needed to understand if we also have linear ineq. constraints
-        
-        hxk         =   [C*xk-d;
-                         Vk(end-q+1:end,1)];
-        gradhk      =   [C',gradVk(:,end-q+1:end,1)];
-        
+
+        hxkp1       =   [C*xkp1-d;
+                         Vkp1(end-q+1:end,1)];
+        gradhkp1    =   [C',gradVkp1(:,end-q+1:end,1)];
+
     else
-        
-        hxk         =   Vk(end-q+1:end,1);
-        gradhk      =   gradVk(:,end-q+1:end,1);
-        
+
+        hxkp1       =   Vkp1(end-q+1:end,1);
+        gradhkp1    =   gradVkp1(:,end-q+1:end,1);
+
     end
-    
-    % Lagrange function gradient computation
-    gradLagr        =   gradfxk-gradgk*lambdak-gradhk*muk;
-    
+
+    % NEW Lagrange function gradient computation
+    gradLagrkp1     =   gradfxkp1-gradgkp1*lambdakp1-gradhkp1*mukp1;
+
+    % Lagrange function gradient computation with previous xk and new
+    % multipliers (for BFGS update)
+    gradLagrk_kp1   =   gradfxk-gradgk*lambdakp1-gradhk*mukp1;
+
+    % Update Hessian estimate with BFGS rule
+    y               =   gradLagrkp1-gradLagrk_kp1;
+    s               =   xkp1-xk;
+
+    if max(abs(s))>0
+
+        if y'*s<= con_options.BFGS_gamma*(s'*Hk*s)
+
+            y       =   y+(con_options.BFGS_gamma*s'*Hk*s-s'*y)/(s'*Hk*s-s'*y)*(Hk*s-y);
+
+        end
+
+        Hk          =   Hk-(Hk*(s*s')*Hk)/(s'*Hk*s)+(y*y')/(s'*y);
+        Hk          =   0.5*(Hk+Hk');
+
+    end
+
+    % Update variables
+    k               =   k+1;
+    xk              =   xkp1;
+    fxk             =   fxkp1;
+    gradfxk         =   gradfxkp1;
+    gxk             =   gxkp1;
+    gradgk          =   gradgkp1;
+    hxk             =   hxkp1;
+    gradhk          =   gradhkp1;
+    gradLagr        =   gradLagrkp1;
+
     % Worst-case equality and inequality constraints computation (for feedback and termination conditions)
     if ~isempty(gxk)
-        
+
         eq_con_max  =   max( abs( gxk ) );
-        
+
     end
-    
+
     if ~isempty(hxk)
-        
+
         ineq_con_min=   min(hxk);
-        
+
     end
-    
+
     % Feedback and output function
     if strcmp(con_options.display,'Iter')
         if ineq_con_min<=0 && sign(ineq_con_min)==-1
             fprintf(F,'%9.0f    %7.5e   %6.5e   %6.5e   %6.5e   %6.5e    %6.5e            %4.0f\r',...
-                k,norm(gradLagr),fxk,eq_con_max,ineq_con_min,deltaf_rel,deltaxk_rel,0);
+                k,norm(gradLagr),fxk,eq_con_max,ineq_con_min,deltaf_rel,deltaxk_rel,niter_LS);
         else
             fprintf(F,'%9.0f    %7.5e   %6.5e   %6.5e    %6.5e   %6.5e    %6.5e           %4.0f\r',...
-                k,norm(gradLagr),fxk,eq_con_max,ineq_con_min,deltaf_rel,deltaxk_rel,0);
+                k,norm(gradLagr),fxk,eq_con_max,ineq_con_min,deltaf_rel,deltaxk_rel,niter_LS);
         end
     end
-    
-    %Store sequence of optimization variables at each iteration
+
     if ~isempty(con_options.outputfcn)
-        
+
         outputfun(xk);
-        
+
     end
-    
-    %Iterations
-    while  norm(gradLagr)                   > con_options.tolgrad   &&  ...
-           k                                < con_options.nitermax  &&  ...
-           deltaxk_rel                      > con_options.tolx      &&  ...
-           deltaf_rel                       > con_options.tolfun    ||  ...
-           (max(eq_con_max,-ineq_con_min)   > con_options.tolconstr) %end
-        
-        %Compute the new search direction
-        [pk,~,~,~,LagMult]      =   quadprog(Hk,gradfxk,-gradhk',hxk,gradgk',...
-                                             -gxk,[],[],[],con_options.QPoptions);
-        lambda_tilde            =   -LagMult.eqlin;
-        mu_tilde                =   LagMult.ineqlin;
-        delta_lambda            =   lambda_tilde - lambdak;
-        delta_mu                =   mu_tilde - muk;
-        
-        %Update merit function weights
-        sigmak                  =   max(abs(lambda_tilde),(sigmak+abs(lambda_tilde))/2);
-        tauk                    =   max(abs(mu_tilde),(tauk+abs(mu_tilde))/2);
-        T1_fun                  =   @(x)merit_function( fun,x,A,b,C,d,p,q,...
-                                                        sigmak,tauk,'BFGS' );
-        T1k                     =   T1_fun(xk);
-        
-        %Directional derivative computation
-        ind_h_violated          =   hxk<=0; %We save the positions of violated
-                                            %inequality constraints
-        gradhk_violated         =   gradhk(:,ind_h_violated);
-        tauk_violated           =   tauk(ind_h_violated,1);
-        DT1k                    =   gradfxk'*pk-sigmak'*abs( gxk )-...  %In this way we'll obtain a directional derivative 
-                                    tauk_violated'*gradhk_violated'*pk; %which weights also the violated constraints
-        
-        %Line search with the merit function
-        [xkp1,fxkp1,niter_LS,tk]=   LS_merit_function(T1_fun,T1k,DT1k,xk,pk,...
-                                                      con_options.ls_tkmax,...
-                                                      con_options.ls_beta,...
-                                                      con_options.ls_c,...
-                                                      con_options.ls_nitermax);
-        deltaxk_rel             =   norm(xkp1-xk)/max(eps,norm(xk));
-        deltaf_rel              =   abs(fxkp1-fxk)/max(eps,abs(fxk));
-        lambdakp1               =   lambdak+tk*delta_lambda;
-        mukp1                   =   muk+tk*delta_mu;
-        
-        %NEW Cost and constraints computation + their gradients
-        [Vkp1,gradVkp1] =   gradient_num_comp(fun,xkp1,con_options.gradmethod,con_options.graddx);
-        fxkp1           =   Vkp1(1:end-p-q,1); %Note that as input this algorithm 
-                                               %takes the cost function and the 
-                                               %nonlinear functions defining inequality and
-                                               %equality constraints, so we need
-                                               %to assign to the cost function
-                                               %only the cost function part.
-        gradfxkp1       =   gradVkp1(:,1:end-p-q);
 
-        if(~isempty( A )) %This if is needed to understand if we also have linear eq. constraints
+    % Store sequence of optimization variables at each iteration
+    if strcmp(con_options.xsequence,'on')
 
-            gxkp1       =   [A*xkp1-b;
-                             Vkp1(end-p-q+1:end-q,1)];
-            gradgkp1    =   [A',gradVkp1(:,end-p-q+1:end-q,1)];
+        xsequence       =   [xsequence, xk];
 
-        else
+    end
 
-            gxkp1       =   Vkp1(end-p-q+1:end-q,1);
-            gradgkp1    =   gradVkp1(:,end-p-q+1:end-q,1);
 
-        end
-
-        if(~isempty( C )) %This if is needed to understand if we also have linear ineq. constraints
-
-            hxkp1       =   [C*xkp1-d;
-                             Vkp1(end-q+1:end,1)];
-            gradhkp1    =   [C',gradVkp1(:,end-q+1:end,1)];
-
-        else
-
-            hxkp1       =   Vkp1(end-q+1:end,1);
-            gradhkp1    =   gradVkp1(:,end-q+1:end,1);
-
-        end
-        
-        % NEW Lagrange function gradient computation
-        gradLagrkp1     =   gradfxkp1-gradgkp1*lambdakp1-gradhkp1*mukp1;
-        
-        % Lagrange function gradient computation with previous xk and new
-        % multipliers (for BFGS update)
-        gradLagrk_kp1   =   gradfxk-gradgk*lambdakp1-gradhk*mukp1;
-        
-        % Update Hessian estimate with BFGS rule
-        y               =   gradLagrkp1-gradLagrk_kp1;
-        s               =   xkp1-xk;
-        
-        if max(abs(s))>0
-            
-            if y'*s<= con_options.BFGS_gamma*(s'*Hk*s)
-                
-                y       =   y+(con_options.BFGS_gamma*s'*Hk*s-s'*y)/(s'*Hk*s-s'*y)*(Hk*s-y);
-                
-            end
-            
-            Hk          =   Hk-(Hk*(s*s')*Hk)/(s'*Hk*s)+(y*y')/(s'*y);
-            Hk          =   0.5*(Hk+Hk');
-            
-        end
-        
-        % Update variables
-        k               =   k+1;
-        xk              =   xkp1;
-        fxk             =   fxkp1;
-        gradfxk         =   gradfxkp1;
-        gxk             =   gxkp1;
-        gradgk          =   gradgkp1;
-        hxk             =   hxkp1;
-        gradhk          =   gradhkp1;
-        gradLagr        =   gradLagrkp1;
-        
-        % Worst-case equality and inequality constraints computation (for feedback and termination conditions)
-        if ~isempty(gxk)
-
-            eq_con_max  =   max( abs( gxk ) );
-
-        end
-
-        if ~isempty(hxk)
-
-            ineq_con_min=   min(hxk);
-
-        end
-        
-        % Feedback and output function
-        if strcmp(con_options.display,'Iter')
-            if ineq_con_min<=0 && sign(ineq_con_min)==-1
-                fprintf(F,'%9.0f    %7.5e   %6.5e   %6.5e   %6.5e   %6.5e    %6.5e            %4.0f\r',...
-                    k,norm(gradLagr),fxk,eq_con_max,ineq_con_min,deltaf_rel,deltaxk_rel,niter_LS);
-            else
-                fprintf(F,'%9.0f    %7.5e   %6.5e   %6.5e    %6.5e   %6.5e    %6.5e           %4.0f\r',...
-                    k,norm(gradLagr),fxk,eq_con_max,ineq_con_min,deltaf_rel,deltaxk_rel,niter_LS);
-            end
-        end
-        
-        if ~isempty(con_options.outputfcn)
-
-            outputfun(xk);
-
-        end
-        
-        % Store sequence of optimization variables at each iteration
-        if strcmp(con_options.xsequence,'on')
-            
-            xsequence       =   [xsequence, xk];
-            
-        end
-        
-        
-    end %END of the while
-    
-  
-end %END of the BFGS if  
-
+end %END of the while
 
 %% Termination
 
