@@ -23,7 +23,7 @@ function T1_val = merit_function( fun,xk,A,b,C,d,p,q,sigma,tau,mode )
 
 if strcmp( mode,'BFGS' )
     
-    fxk             =   Vk( 1:end-p-q,1 );
+    fxk             =   Vk( (1:(end-p-q)),1 );
     
 end
 
