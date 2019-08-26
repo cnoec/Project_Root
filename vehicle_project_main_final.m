@@ -40,15 +40,15 @@ myoptions               =   con_optimalset;
 myoptions.gradmethod  	=	'CD';
 myoptions.graddx        =	2^-17;
 myoptions.tolgrad    	=	1e-8;
-myoptions.ls_beta       =	0.5;
+myoptions.ls_beta       =	0.8;
 myoptions.ls_c          =	.1;
-myoptions.ls_nitermax   =	1e2;
-myoptions.nitermax      =	10;
+myoptions.ls_nitermax   =	1e2*2;
+% myoptions.nitermax      =	15;
 myoptions.xsequence     =	'on';
 
 % (fun,x0,A,b,C,d,p,q,con_options,filename)
 
-[u_opt,~,~,exit,seq]    = con_NLP_opt(@(u)( fun(u,xi0, T_end, Ts, waypoints, n_wp)),u_0,[],[],[],[],2,0,myoptions,"con_iterations" );
+[u_opt,~,~,exit,seq]    = con_NLP_opt(@(u)( fun(u,xi0, T_end, Ts, waypoints, n_wp , innerBoundary, outerBoundary,6)),u_0,[],[],[],[],2,0,myoptions,"con_iterations" );
 
 %% Optimal trajectory plot
 
@@ -66,7 +66,7 @@ end
 
 %% Sequence plotting
 
-for i = 1:size(seq)
+for i = 1:min(size(seq))
     figure
     plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
         outerBoundary(:,2),'black'),grid on
