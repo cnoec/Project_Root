@@ -32,7 +32,7 @@ tk              =   tkmax;
 xkp1            =   xk+tk*pk;
 fxkp1           =   fun(xkp1);
 
-while isnan( fxkp1 ) || ( fxkp1 > fxk+tk*c*DT1k && n_iter < nitermax )
+while (isnan( fxkp1 ) || ( fxkp1 > fxk+tk*c*DT1k && n_iter < nitermax ))
     
     tk          =   beta*tk;
     xkp1        =   xk+tk*pk;
@@ -41,5 +41,5 @@ while isnan( fxkp1 ) || ( fxkp1 > fxk+tk*c*DT1k && n_iter < nitermax )
     
 end %End of the while
 
-end%End of the function
+end %End of the function
 

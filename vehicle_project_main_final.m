@@ -25,7 +25,7 @@ run('initial_guess_setting');
 
 figure
 plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
-    outerBoundary(:,2),'black'),grid on
+     outerBoundary(:,2),'black'),grid on
 axis equal
 
 hold on
@@ -45,8 +45,14 @@ myoptions.ls_c          =	.1;
 myoptions.ls_nitermax   =	1e2*2;
 % myoptions.nitermax      =	15;
 myoptions.xsequence     =	'on';
+myoptions.QPoptions   =   ...
+    optimset('Display','none','Algorithm','interior-point-convex','MaxIter',1000); 
 
 % (fun,x0,A,b,C,d,p,q,con_options,filename)
+
+% addpath('Functions\con_optimization\Tester\Prof');
+%                             %myfmincon(fun,x0,A,b,C,d,p,q,myoptions)
+% [u_opt,~,~,exit,seq]    =   myfmincon(@(u)( fun(u,xi0, T_end, Ts, waypoints, n_wp , innerBoundary, outerBoundary,6)),u_0,[],[],[],[],[],n_states,myoptions);
 
 [u_opt,~,~,exit,seq]    = con_NLP_opt(@(u)( fun(u,xi0, T_end, Ts, waypoints, n_wp , innerBoundary, outerBoundary,6)),u_0,[],[],[],[],2,0,myoptions,"con_iterations" );
 

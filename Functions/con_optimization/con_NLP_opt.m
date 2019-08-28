@@ -186,8 +186,9 @@ while  norm(gradLagr)                   > con_options.tolgrad   &&  ...
        (max(eq_con_max,-ineq_con_min)   > con_options.tolconstr)&&k< con_options.nitermax    %End
 
     %Compute the new search direction
-    [pk,~,~,~,LagMult]      =   quadprog(Hk,gradfxk,-gradhk',hxk,gradgk',...
+    [pk,~,exitflag,~,LagMult]      =   quadprog(Hk,gradfxk,-gradhk',hxk,gradgk',...
                                          -gxk,[],[],[],con_options.QPoptions);
+                                     
     lambda_tilde            =   -LagMult.eqlin;
     mu_tilde                =   LagMult.ineqlin;
     delta_lambda            =   lambda_tilde - lambdak;
