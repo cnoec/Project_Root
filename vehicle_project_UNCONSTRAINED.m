@@ -58,7 +58,7 @@ tau                 =       0;
 d                   =       0;
 Ts                  =       1e-1; 
 T_end               =       25;
-n_iterations        =       T_end/Ts;
+n_iterations        =       T_end/Ts+1;
 
 u                                   =       ones(2*n_iterations,1);
 u(1:n_iterations)                   =       100/2000;
@@ -80,19 +80,29 @@ u(n_iterations+1:2*n_iterations)    =       3*pi/180;
 
 % u_T                                 =       ones(n_iterations,1)*100;
 
-[xi, t_vec, end_check]              =       trajectory_generation(u, xi0, T_end, Ts);
+u_0 = [20;
+     50;
+     50;
+     50;
+    0.61/15*ones(n_iterations,1);];
+
+[xi, t_vec, end_check]              =       trajectory_generation_sim(u_0, xi0, T_end, Ts);
 
 n_states                            =       length(xi);
 
 tic
 % [u_opt,dist_opt,n_iter,~,seq]       = myfminunc(@(u)(deltasum(u,xi0, T_end, Ts, waypoints, n_wp)...
 %                                     ),u,myoptimalset);
-[u_opt,exitflag, debug] = uncons_NLP_opt(@(u)deltasum(u,xi0, T_end, Ts, waypoints, n_wp),u,unc_optimalset);
+
+
+[u_opt,~,~] = uncons_NLP_opt(@(u)(deltasum(u,xi0,T_end,Ts,waypoints,n_wp)),u_0,unc_optimalset);
+
 unc_time = toc
                             
-[xi, ~, ~]    = trajectory_generation(u_opt, xi0, T_end, Ts);
 
 %% optimal trajectory plot
+
+[xi, ~, ~]    = trajectory_generation_sim(u_opt, xi0, T_end, Ts);
 
 figure
 plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...

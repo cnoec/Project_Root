@@ -2,6 +2,15 @@ clear all
 close all
 clc
 
+path                    =   pwd;
+addpath('Functions');
+addpath('Model');
+addpath('Mat_Data\');
+addpath('Functions\unc_optimization');
+addpath('Functions\con_optimization');
+addpath('Functions\track');
+addpath('Functions\cost_function');
+
 %%
 
 Ts = 0.1;
@@ -26,8 +35,12 @@ t_vec = t_vec';
 N = length(t_vec); 
 Ts_1ms = 1e-3;
 
-u = [20; 0.61/15*ones(N,1);];
-[xi, ~, end_check] = simulink_traj(u, xi_0, T_end, Ts);
+u = [20;
+     50;
+     50;
+     50;
+    0.61/15*ones(N,1);];
+[xi, ~, end_check] = trajectory_generation_sim(u, xi_0, T_end, Ts);
 
 %%
 figure

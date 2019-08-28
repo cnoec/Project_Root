@@ -21,8 +21,8 @@ function [dist_min] = wp_to_trajectory_distance(target, traject, n_wp,n_states)
 %       ditance:    minimum distance
 
 % Initialization in order to let work the algorithm
-traject =       traject';
-max_dist = 10e20;
+traject     =       traject';
+max_dist    =       10e20;
 
 min_index = 1;
 
