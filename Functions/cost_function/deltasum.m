@@ -1,6 +1,6 @@
 function [sum_Delta] = deltasum(u, xi0, T_end, Ts, waypoints, n_wp)
 
-[xi, ~, ~, ~] = trajectory_generation_cc(u, xi0, T_end, 1e-1, 1e-3);
+[xi, ~, ~, ~] = trajectory_generation_cc(u, xi0, T_end, 1e-1, 1e-2);
 
 n_states = length(xi);
 
