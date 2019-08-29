@@ -1,4 +1,4 @@
-function [xi_dot,Forces] = Vehicle_Model_Function(tau,xi,u,d,theta)
+function [xi_dot] = Vehicle_Model_Function(xi,u,theta)
 % Nonlinear dynamic model of a road vehicle with six states: 2-D position,
 % 2-D velocity, yaw angle and yaw rate. Nonlinear lateral tyre forces with
 % Fiala model; saturation on braking and driving torque, saturation on 
@@ -31,7 +31,7 @@ r       = xi(6,1);          % yaw rate (rad/s)
 
 Td      = u(1,1);           % driving/braking torque (N*m)
 delta   = u(2,1);           % front wheel steering angle (rad)
-W       = d(1,1);           % lateral wind speed (m/s)
+W       = 0;           % lateral wind speed (m/s)
 
 %% Parameter vector
 
@@ -100,9 +100,6 @@ xi_dot(4,1)  = beta_dot;
 xi_dot(5,1)  = psi_dot;
 xi_dot(6,1)  = r_dot;
 
-Forces(1,1)  = Fyf; 
-Forces(2,1)  = Fyr;
-Forces(3,1)  = Fx;
 
 end
 

@@ -54,8 +54,6 @@ plot(X,Y,'*r');
 %% Optimization
 
 boundary_number     =       1;
-tau                 =       0;
-d                   =       0;
 Ts                  =       1e-1; 
 T_end               =       25;
 n_iterations        =       T_end/Ts+1;

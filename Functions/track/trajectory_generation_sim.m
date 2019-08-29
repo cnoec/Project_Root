@@ -21,7 +21,7 @@ Ts_1ms                                  =   1e-3;
 
 end_check   = 1;
 
-if N+4 ~= length(u)
+if N+2 ~= length(u)
     end_check =  0;
     disp('Errore dimensione');
     xi=0;
@@ -32,12 +32,15 @@ end
 
 load('parameters.mat');
 
-steer_input                             =   timeseries(u(5:end),t_vec);
+steer_input                             =   timeseries(u(3:end),t_vec);
 speed_ref                               =   zeros(N,1);
-speed_ref(1:floor(N/4))                 =   u(1);
-speed_ref(floor(N/4)+1:floor(N/2))      =   u(2);
-speed_ref(floor(N/2)+1:floor(3*N/4))    =   u(3);
-speed_ref(floor(3*N/4)+1:end)           =   u(4);
+% speed_ref(1:floor(N/4))                 =   u(1);
+% speed_ref(floor(N/4)+1:floor(N/2))      =   u(2);
+% speed_ref(floor(N/2)+1:floor(3*N/4))    =   u(3);
+% speed_ref(floor(3*N/4)+1:end)           =   u(4);
+
+speed_ref(1:floor(N/2))         =   u(1);
+speed_ref((floor(N/2)+1):end)   =   u(2);
 
 speed_ref                               =   timeseries(speed_ref,t_vec);
 
