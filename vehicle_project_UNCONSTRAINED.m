@@ -36,7 +36,7 @@ m = -1/m;
 
 X       =       x0;         % inertial X position (m)
 Y       =       y0;         % inertial Y position (m)
-Ux      =        5;         % body x velocity (m/s)
+Ux      =       20;         % body x velocity (m/s)
 beta    =       0;          % sideslip angle (rad)
 psi     =       atan(m);    % yaw angle (rad)
 r       =       0;          % yaw rate (rad/s)
@@ -44,23 +44,37 @@ xi0     =       [X Y Ux beta psi r]';
 
 plot(X,Y,'*r');
 
-T_end   =       25;
-Ts      =       1e-1;
+T_end   =       15;
+Ts_steer      =       1e-1;
+Ts_sim = 1e-2;
 
-u_0     =       [20;
+u_0     =       [30;
                  30;
-                 0.61/15*ones(T_end/Ts,1)];
+                 3/15*ones(T_end/Ts_steer,1)];
+             
+%% cc
+
+global num_dyn den_dyn num_int
+
+
+s = tf('s');
+
+CC_int                                  =   90/s;
+CC_int_d                                =   c2d(CC_int, Ts_sim, 'tustin');
+[num_int, den_int]                      =   tfdata(CC_int_d, 'v');
+
+CC_dyn                                  =   920/(s/10 + 1);
+CC_dyn_d                                =   c2d(CC_dyn, Ts_sim, 'tustin');
+[num_dyn, den_dyn]                      =   tfdata(CC_dyn_d, 'v');
 
 %% Optimization
 
 tic
-
-[u_opt,~,debug] = uncons_NLP_opt(@(u)(deltasum(u,xi0,T_end,Ts,waypoints,n_wp)),u_0,unc_optimalset);
-
-unc_time = toc;
+[u_opt,~,debug] = uncons_NLP_opt(@(u)(unc_MINFUNC_gamma(u,xi0,T_end,Ts_steer,waypoints,n_wp,5)),u_0,unc_optimalset);
+unc_time = toc
                            
 %% optimal trajectory plot
-
+u_opt = [20; 20; u_opt];
 [xi, t_vec, ~ ,torque]    = trajectory_generation_cc(u_opt, xi0, T_end, 0.1,1e-2);
 
 figure(10)
@@ -78,13 +92,14 @@ plot(t_vec,xi(3,:));grid;title('Torque/s [Nm/s]');
 
 sequence = debug.seq;
 
-figure(13)
+figure(1)
 
 for j = 1:size(sequence,2)
     
     [xi_s,~,~,~]    =    trajectory_generation_cc(sequence(:,j), xi0, T_end, 0.1,1e-2);
     plot(xi_s(1,:),xi_s(2,:));grid;
     hold on
+    pause
     
 end
 

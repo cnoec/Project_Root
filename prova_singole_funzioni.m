@@ -44,7 +44,7 @@ xi0     =       [X Y Ux beta psi r]';
 
 Ts = 1e-1;
 Ts_sim = 1e-3;
-T_end = 25;
+T_end = 15;
 N = T_end/Ts +1;
 
 %%
@@ -66,10 +66,10 @@ toc
 
 
 %%
-u = [30; 20; 0.61/15*ones(N,1);];
+u = [30; 30; 3/15*ones(N,1);];
 
 [xi, t_vec, exitflag,Torque] = trajectory_generation_cc(u, xi0, T_end, Ts, Ts_sim);
-figure
+figure(1)
 plot(xi(1,:), xi(2,:)),grid on;
 
 figure
@@ -86,10 +86,17 @@ plot(t_vec(1:(end-1)), Torque), grid on;
 % 
 
 
-%% test cost function
+%% test cost function 1
 tic
 cost = deltasum(u, xi0, T_end, Ts, waypoints, n_wp);
 cost_fun_time = toc
+
+%% test cost function 2
+tic
+[cost_2, point_index] = unc_MINFUNC_gamma(u, xi0, T_end, Ts, waypoints, n_wp, 10)
+toc
+
+
 
 % %% gradiente
 % 
