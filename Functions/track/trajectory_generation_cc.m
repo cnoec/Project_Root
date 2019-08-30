@@ -50,31 +50,35 @@ xi(:,1) = xi_0;
 
 load('parameters.mat');
 
+global num_dyn den_dyn num_int
+T_dyn = 0;
+T_int = 0;
+ek = u(1)-xi_0(3);
+ekm1 = ek;
+
 %% simulazione
 
-eps = 0;
-
 for ind=2:N
-    if  ind < floor(N/2)
-         if xi(3,ind-1) <= u(1) - eps
-             T_in = Tdmax;
-         elseif xi(3,ind-1) >= u(1) + eps
-             T_in = -Tdmax;
-         elseif (xi(3,ind-1) > u(1) - eps) && (xi(3,ind-1) < u(1) + eps)
-             T_in = 0;
-         end
-    else
-         if xi(3,ind-1) <= u(2) - eps
-             T_in = Tdmax;
-         
-         elseif xi(3,ind-1) >= u(2) + eps
-             T_in = -Tdmax;
-         elseif (xi(3,ind-1) > u(2) - eps) && (xi(3,ind-1) < u(2) + eps)
-             T_in = 0;
-         end 
-    end
+    % Control action
+    T_int = min(Tdmax, max(Tdmin, T_int+num_int*[ek; ekm1]));
+    T_dyn = -den_dyn(1,2)*T_dyn + num_dyn*[ek; ekm1];
+    T_in = T_int + T_dyn;
+    % Saturation
+    T_in = min(Tdmax, T_in);
+    T_in = max(Tdmin, T_in);
+    
     Torque(ind-1) = T_in;
+    
+    % model integration
     input = [T_in; steer(ind);];
     xi(:,ind) = xi(:,ind-1)  + Ts_sim*Vehicle_Model_Function(xi(:,ind-1), input, theta);
+    
+    % error update
+    ekm1 = ek;
+    if ind < floor(N/2)
+        ek = u(1) - xi(3,ind);
+    else
+        ek = u(2)- xi(3,ind);
+    end
+ 
 end
-

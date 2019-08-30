@@ -47,7 +47,25 @@ Ts_sim = 1e-3;
 T_end = 25;
 N = T_end/Ts +1;
 
+%%
 
+global num_dyn den_dyn num_int
+
+tic
+s = tf('s');
+
+CC_int                                  =   90/s;
+CC_int_d                                =   c2d(CC_int, Ts_sim, 'tustin');
+[num_int, den_int]                      =   tfdata(CC_int_d, 'v');
+
+CC_dyn                                  =   920/(s/10 + 1);
+CC_dyn_d                                =   c2d(CC_dyn, Ts_sim, 'tustin');
+[num_dyn, den_dyn]                      =   tfdata(CC_dyn_d, 'v');
+toc
+
+
+
+%%
 u = [30; 20; 0.61/15*ones(N,1);];
 
 [xi, t_vec, exitflag,Torque] = trajectory_generation_cc(u, xi0, T_end, Ts, Ts_sim);

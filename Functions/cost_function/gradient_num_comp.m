@@ -13,14 +13,9 @@ if strcmp(method, 'FD')
     gradient(1,:) = (fnc(xkr+p)-fnc(xkr)).'/dx;
     
     for ind = 2:n
-        tic
         p(ind)=dx;
         p(ind-1)=0;
-        gradient(ind,:) = (fnc(xkr+p)-fnc(xkr)).'/dx;
-         disp(ind);
-%         disp('gradient');
-toc
-    
+        gradient(ind,:) = (fnc(xkr+p)-fnc(xkr)).'/dx;    
     end
     
     

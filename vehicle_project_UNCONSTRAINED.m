@@ -58,8 +58,7 @@ tic
 [u_opt,~,debug] = uncons_NLP_opt(@(u)(deltasum(u,xi0,T_end,Ts,waypoints,n_wp)),u_0,unc_optimalset);
 
 unc_time = toc;
-                            
-
+                           
 %% optimal trajectory plot
 
 [xi, t_vec, ~ ,torque]    = trajectory_generation_cc(u_opt, xi0, T_end, 0.1,1e-2);
