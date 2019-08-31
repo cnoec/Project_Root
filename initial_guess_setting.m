@@ -33,15 +33,7 @@ xi0                 =       [X Y Ux beta psi r]';
 
 T_end               =       25;
 Ts                  =       1e-1;
+Ts_sim              =       1e-2;
 n_iterations        =       T_end/Ts;
-
-
-u_T                          =      ones(n_iterations,1)*100;
-
-u_0                          =      [u_T;u_0];
-
-[xi, t_vec, end_check]       =      trajectory_generation(u_0,xi0,T_end,Ts);
-
-n_states                     =      length(xi);
 
 %%

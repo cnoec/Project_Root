@@ -13,14 +13,14 @@ function v = fun(u, xi0, T_end, Ts, waypoints, n_wp ,inner_boundary,outer_bounda
 %                xi(2,end) - xi(2,1)];
 % g           = g/1e2;
 
-g = (xi(1,end)-xi(1,1));
-g= g/1e2;
+g = [];
 
 % h = track_constraint(xi,inner_boundary,outer_boundary,length(xi),road_width);
 
-h            = [-(xi(2,end)-xi(2,1))+road_width/2;
-                 (xi(2,end)-xi(2,1))+road_width/2;
-                  xi(3,1)];
+h            = [(xi(1,end)-xi(1,1));
+                -(xi(2,end)-xi(2,1))-road_width/2;
+                (xi(2,end)-xi(2,1))-road_width/2;
+                xi(3,1)];
 
 h = h/1e4;
 % h = [];
@@ -31,3 +31,4 @@ v = [F;
      h];
 
 end
+

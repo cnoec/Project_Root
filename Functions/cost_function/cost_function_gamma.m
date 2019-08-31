@@ -1,4 +1,4 @@
-function [FUNCTION_VALUE, point_index] = cost_function_gamma(u, xi0, T_end, Ts, waypoints, n_wp, gamma)
+function [FUNCTION_VALUE, point_index ,xi] = cost_function_gamma(u, xi0, T_end, Ts, waypoints, n_wp, gamma ,delta)
 %     Function unconstrained to minimize:
 %         Input:  u: input (torque, delta)    COLUMN VECTOR
 %                 xi_0: initial conditions    COLUMN VECTOR
@@ -50,6 +50,6 @@ end
 sum_res = sum(result);
 sum_weight = sum(penalty);
 
-FUNCTION_VALUE = (sum_res + gamma*sum_weight)/1e6;
+FUNCTION_VALUE = (sum_res + gamma*sum_weight)/delta;
 
 end
