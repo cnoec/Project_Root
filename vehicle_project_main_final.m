@@ -45,7 +45,7 @@ myoptions.tolx          =	1e-16;
 myoptions.ls_beta       =	0.8;
 myoptions.ls_c          =	.1;
 myoptions.ls_nitermax   =	1e2*3;
-myoptions.nitermax      =	50;
+myoptions.nitermax      =	200;
 myoptions.xsequence     =	'on';
 
 % (fun,x0,A,b,C,d,p,q,con_options,filename)
