@@ -14,10 +14,10 @@ addpath('Functions\cost_function');
 %% Run the initialization
 
 %run('vehicle_project_UNCONSTRAINED.m');
-load('20190528_u_opt_converge');
-
-u_0                     =   u_opt;
-clear u_opt
+% load('20190528_u_opt_converge');
+% 
+% u_0                     =   u_opt;
+% clear u_opt
 
 run('initial_guess_setting');
 
@@ -45,7 +45,7 @@ myoptions.tolx          =	1e-16;
 myoptions.ls_beta       =	0.8;
 myoptions.ls_c          =	.1;
 myoptions.ls_nitermax   =	1e2*3;
-myoptions.nitermax      =	200;
+myoptions.nitermax      =	100;
 myoptions.xsequence     =	'on';
 
 % (fun,x0,A,b,C,d,p,q,con_options,filename)
@@ -53,48 +53,24 @@ myoptions.xsequence     =	'on';
 u_0                     =   [20;
                              25;
                              3/15*ones(T_end/Ts,1)];
-                         
-%% cruise control
-global num_dyn den_dyn num_int
-
-s = tf('s');
-
-CC_int                  =   90/s;
-CC_int_d                =   c2d(CC_int, Ts_sim, 'tustin');
-[num_int, den_int]      =   tfdata(CC_int_d, 'v');
-
-CC_dyn                  =   920/(s/10 + 1);
-CC_dyn_d                =   c2d(CC_dyn, Ts_sim, 'tustin');
-[num_dyn, den_dyn]      =   tfdata(CC_dyn_d, 'v');
-
-%% h_track variables
-
-global Par_1 Par_2 Par_3 Par_4 Par_5 Par_6 Par_7 Par_8
-
-
-Par_3 = CircleFitByTaubin(outerBoundary(30:98,:));
-Par_4 = CircleFitByTaubin(innerBoundary(30:98,:));
-
-Par_7 = CircleFitByTaubin(outerBoundary(158:228,:));
-Par_8 = CircleFitByTaubin(innerBoundary(158:228,:));
-
-Par_1 = -Par_3(3)+Par_4(2);
-Par_2 = -Par_4(3)+Par_4(2);
-
-Par_5 = Par_3(3)+Par_4(2);
-Par_6 = Par_4(3)+Par_4(2);
-
-
 
 %% optimization
 
-[u_opt,~,~,exit,seq]    =   con_NLP_opt(@(u)( fun(u,xi0, T_end, Ts, waypoints, n_wp , innerBoundary, outerBoundary,6)),u_0,[],[],[],[],1,3+5000,myoptions,"con_iterations" );
+p                       =   1;          %# of nonlinear equality constraints
+q                       =   3+2500/10;  %# of nonlinear inequality constraints
 
+tic
+
+[u_opt,~,~,exit,seq]    =   con_NLP_opt(@(u)( fun(u,xi0, T_end, Ts, ...
+                            waypoints, n_wp , innerBoundary, outerBoundary,6)),...
+                            u_0,[],[],[],[],p,q,myoptions,"con_iterations");
+
+con_time                =   toc;
 
 %% Optimal trajectory plot
 
 [xi, t_vec, ~,torque]   =   trajectory_generation_cc(u_opt, xi0, T_end, Ts,1e-2);
-    
+
 figure(10)
 plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
      outerBoundary(:,2),'black'),grid on
@@ -119,3 +95,9 @@ for j = 1:size(seq,2)
     hold on
     
 end
+
+i                       =    84;
+
+plot_ith_sequence(seq,i,innerBoundary,outerBoundary,xi0,T_end)
+
+%%

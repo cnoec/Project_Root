@@ -35,5 +35,36 @@ T_end               =       25;
 Ts                  =       1e-1;
 Ts_sim              =       1e-2;
 n_iterations        =       T_end/Ts;
+% n_states            =       T_end/Ts_sim;
+
+%% cruise control
+global num_dyn den_dyn num_int
+
+s = tf('s');
+
+CC_int              =   90/s;
+CC_int_d            =   c2d(CC_int, Ts_sim, 'tustin');
+[num_int, den_int]  =   tfdata(CC_int_d, 'v');
+
+CC_dyn              =   920/(s/10 + 1);
+CC_dyn_d            =   c2d(CC_dyn, Ts_sim, 'tustin');
+[num_dyn, den_dyn]  =   tfdata(CC_dyn_d, 'v');
+
+%% h_track variables
+
+global Par_1 Par_2 Par_3 Par_4 Par_5 Par_6 Par_7 Par_8
+
+
+Par_3               =   CircleFitByTaubin(outerBoundary(30:98,:));
+Par_4               =   CircleFitByTaubin(innerBoundary(30:98,:));
+
+Par_7               =   CircleFitByTaubin(outerBoundary(158:228,:));
+Par_8               =   CircleFitByTaubin(innerBoundary(158:228,:));
+
+Par_1               =   -Par_3(3)+Par_4(2);
+Par_2               =   -Par_4(3)+Par_4(2);
+
+Par_5               =   Par_3(3)+Par_4(2);
+Par_6               =   Par_4(3)+Par_4(2);
 
 %%
