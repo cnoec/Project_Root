@@ -54,6 +54,7 @@ u_0                     =   [20;
                              25;
                              3/15*ones(T_end/Ts,1)];
                          
+%% cruise control
 global num_dyn den_dyn num_int
 
 s = tf('s');
@@ -66,7 +67,28 @@ CC_dyn                  =   920/(s/10 + 1);
 CC_dyn_d                =   c2d(CC_dyn, Ts_sim, 'tustin');
 [num_dyn, den_dyn]      =   tfdata(CC_dyn_d, 'v');
 
-[u_opt,~,~,exit,seq]    =   con_NLP_opt(@(u)( fun(u,xi0, T_end, Ts, waypoints, n_wp , innerBoundary, outerBoundary,6)),u_0,[],[],[],[],1,3,myoptions,"con_iterations" );
+%% h_track variables
+
+global Par_1 Par_2 Par_3 Par_4 Par_5 Par_6 Par_7 Par_8
+
+
+Par_3 = CircleFitByTaubin(outerBoundary(30:98,:));
+Par_4 = CircleFitByTaubin(innerBoundary(30:98,:));
+
+Par_7 = CircleFitByTaubin(outerBoundary(158:228,:));
+Par_8 = CircleFitByTaubin(innerBoundary(158:228,:));
+
+Par_1 = -Par_3(3)+Par_4(2);
+Par_2 = -Par_4(3)+Par_4(2);
+
+Par_5 = Par_3(3)+Par_4(2);
+Par_6 = Par_4(3)+Par_4(2);
+
+
+
+%% optimization
+
+[u_opt,~,~,exit,seq]    =   con_NLP_opt(@(u)( fun(u,xi0, T_end, Ts, waypoints, n_wp , innerBoundary, outerBoundary,6)),u_0,[],[],[],[],1,3+5000,myoptions,"con_iterations" );
 
 
 %% Optimal trajectory plot
@@ -86,6 +108,8 @@ plot(t_vec(1:end-1),torque);grid;title('Torque [Nm/s]');
 figure(12)
 plot(t_vec,xi(3,:));grid;title('Speed [m/s]');
 
+%% sequence
+
 figure(1)
 
 for j = 1:size(seq,2)
@@ -95,5 +119,3 @@ for j = 1:size(seq,2)
     hold on
     
 end
-
-%%
