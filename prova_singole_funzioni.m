@@ -30,7 +30,7 @@ Ts_sim = 1e-2;
 Ts_steer = 1e-1;
 
 %% trova funzioni
-
+u_opt = [20; 25; 3/15*ones(T_end/Ts_steer,1);];
 [xi, ~, ~,~] = trajectory_generation_cc(u_opt, xi0, T_end, Ts_steer, Ts_sim);
 
 %%
@@ -48,28 +48,30 @@ Par_6 = Par_4(3)+Par_4(2);
 
 n_states = T_end/Ts_sim;
 
-h_track = zeros(2*n_states,1);
+tic
+h_track = zeros(2*n_states/10,1);
 eps = 0.05;
 
-for ind = 1:n_states
+for ind = 10:10:n_states
 
     state = [xi(1,ind) xi(2,ind)];      %punto da verificare
     
 if state(1) > Par_4(1)
     centre_x = mean([Par_3(1) Par_4(1)]);
     centre_y = mean([Par_3(2) Par_4(2)]);
+    
     dist = sqrt( (centre_x-state(1))^2 + (centre_y-state(2))^2 );   % la distanza tra la traiettoria ed il centro della circ
-    h_track(((ind-1)*2+1):ind*2) = [   -dist+Par_3(3)-eps;           % settori A,B
-             dist-Par_4(3)-eps];
+    h_track(((ind/10-1)*2+1):ind*2/10) = [   -dist+Par_3(3)-eps;           % settori A,B
+                                        dist-Par_4(3)-eps];
 %      disp('A,B');
          
 elseif state(1) > Par_8(1) && state(1) <= Par_4(1)
     dist = state(2);            % la distanza è la coordinata y
     if state(2) > Par_4(2)      % settore C
-        h_track(((ind-1)*2+1):ind*2) = [-dist+Par_5(1)-eps; dist-Par_6(1)+eps;];
+        h_track(((ind/10-1)*2+1):ind/10*2) = [-dist+Par_5(1)-eps; dist-Par_6(1)+eps;];
 %         disp('C');
     else
-        h_track(((ind-1)*2+1):ind*2) = [-dist+Par_2(1)-eps; dist-Par_1(1)+eps;]; 
+        h_track(((ind/10-1)*2+1):ind/10*2) = [-dist+Par_2(1)-eps; dist-Par_1(1)+eps;]; 
 %         disp('F');      % settore F
     end
       
@@ -77,7 +79,7 @@ elseif state(1) < Par_8(1)
     centre_x = mean([Par_7(1) Par_8(1)]);
     centre_y = mean([Par_7(2) Par_8(2)]);
     dist = sqrt( (centre_x-state(1))^2 + (centre_y-state(2))^2 ); 
-    h_track(((ind-1)*2+1):ind*2) = [-dist+Par_7(3)-eps;           % settori D,E
+    h_track(((ind/10-1)*2+1):ind/10*2) = [-dist+Par_7(3)-eps;           % settori D,E
               dist-Par_8(3)-eps];
 %     disp('D,E');
     
@@ -85,6 +87,14 @@ end
 
 
 end
+edo = toc
+
+%%
+
+tic 
+track_constraint(xi,innerBoundary,outerBoundary,n_states,road_width);
+sofi = toc
+
 
 %%
 
