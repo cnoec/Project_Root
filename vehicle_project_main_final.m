@@ -15,7 +15,7 @@ addpath('Functions\cost_function');
 %% Run the initialization
 
 %run('vehicle_project_UNCONSTRAINED.m');
-load('310819_uopt.mat');
+load('310819_uopt_2.mat');
 
 u_0                     =   u_opt;
 clear u_opt
@@ -33,7 +33,7 @@ myoptions.tolx          =	1e-16;
 myoptions.ls_beta       =	0.8;
 myoptions.ls_c          =	.1;
 myoptions.ls_nitermax   =	1e2*3;
-myoptions.nitermax      =	100;
+myoptions.nitermax      =	500;
 myoptions.xsequence     =	'on';
 
 % (fun,x0,A,b,C,d,p,q,con_options,filename)
