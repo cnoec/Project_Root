@@ -9,12 +9,13 @@ addpath('Mat_Data\');
 addpath('Functions\unc_optimization');
 addpath('Functions\con_optimization');
 addpath('Functions\track');
+
 addpath('Functions\cost_function');
 
 %% Run the initialization
 
 %run('vehicle_project_UNCONSTRAINED.m');
-load('310819_uopt_2.mat');
+load('310819_uopt.mat');
 
 u_0                     =   u_opt;
 clear u_opt
@@ -48,7 +49,7 @@ u_0                       =    [u_0(1:2);
                          
 %% Initial Setting visualization
 
-[xi_0, t_vec, ~,torque]   =   trajectory_generation_cc(u_0, xi0, T_end, Ts,1e-2);
+[xi_0,~,~,~]   =   trajectory_generation_cc(u_0, xi0, T_end, Ts,1e-2);
 
 
 figure('Name','Initial_Guess')
@@ -61,8 +62,8 @@ plot(xi_0(1,:),xi_0(2,:))
 %% optimization
 
 p                       =   0;          %# of nonlinear equality constraints
-% q                       =   5+2500/10;  %# of nonlinear inequality constraints
-q                       =   2;
+q                       =   5+2500/10;  %# of nonlinear inequality constraints
+% q                       =   2;
 
 tic
 
