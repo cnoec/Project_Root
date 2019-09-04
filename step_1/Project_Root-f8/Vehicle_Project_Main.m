@@ -12,16 +12,10 @@ addpath('Mat_Data\');
 
 %% track generation and waypoints positioning
 
-% choose which track to plot:
-% track_number = 1 -> CIRCLE TRACK
-% track_number = 2 -> OVAL TRACK
-% track_number = 3 -> RANDOM TRACK
-
 track_number = 2;
 [~,outerBoundary,innerBoundary,N,x0,y0] = track_generation(track_number);
 
 n_wp = 30;
-
 [ waypoints ] = waypoints_selector(innerBoundary,outerBoundary, n_wp,N);
 
 %% parameters initialization and setting of initial state
@@ -34,13 +28,6 @@ Y       =       y0;         % inertial Y position (m)
 Ux      =       20;         % body x velocity (m/s)
 beta    =       0;          % sideslip angle (rad)
 psi     =       atan(m);    % yaw angle (rad)
-
-if (track_number == 1) 
-    
-    psi = psi + pi; 
-
-end
-
 r       =       0;          % yaw rate (rad/s)
 xi0     =       [X Y Ux beta psi r]';
 
@@ -60,15 +47,7 @@ n_iterations        =       T_end/Ts;
 % u(n_iterations+1:2*n_iterations)    =       0*pi/180;
 
 u_d                                 =       ones(n_iterations,1)*3*pi/180;
-
-% load('u_opt_20190528.mat');
-% 
-% u_d = u_opt();
-
-clear u_opt
-
 u_T                                 =       ones(n_iterations,1)*100;
-
 [xi, t_vec, end_check]              =       trajectory_generation([u_T;u_d], xi0, T_end, Ts);
 
 n_states                            =       length(xi);
@@ -77,36 +56,47 @@ tic
 [u_opt,exit_flag,seq]       = uncons_NLP_opt(@(u_opt)(deltasum(u_opt, u_T ,xi0, T_end, Ts, waypoints, n_wp)...
                                     ),u_d,unc_optimalset);
 toc
-           %%                 
+
+%%        
+
+[xi_ini, ~, ~]    = trajectory_generation([u_T;u_d], xi0, T_end, Ts);
 [xi, ~, ~]    = trajectory_generation([u_T;u_opt], xi0, T_end, Ts);
 
-figure
+figure('Name', 'Optimal Trajectory' , 'NumberTitle', 'off')
+subplot 211
 plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
-    outerBoundary(:,2),'black'),grid on
-axis equal
-
+    outerBoundary(:,2),'black'),grid on, axis equal
 hold on
+plot(xi_ini(1,:), xi_ini(2,:), '.blue');
+hold off
 
-for i=1:(n_states-1)
-   plot([xi(1,i) xi(1,i+1)],[xi(2,i) xi(2,i+1)],'.r');
-end
+subplot 212
+plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
+    outerBoundary(:,2),'black'),grid on, axis equal
+hold on
+plot(xi(1,:), xi(2,:), '.r');
+hold off
 
-figure
+% for i=1:(n_states-1)
+%    plot([xi(1,i) xi(1,i+1)],[xi(2,i) xi(2,i+1)],'.r');
+% end
 
-for i = 1:min(size(seq))
-    figure
-    plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
-        outerBoundary(:,2),'black'),grid on
-    axis equal
-    hold on
-    u_check                     =       seq(:,i);
-    u = [u_T; u_check];
-    [xi_1, ~, ~]                =       trajectory_generation(u, xi0, T_end, Ts);
-    plot(xi_1(1,:), xi_1(2,:),'.');grid;
-    title(i);
-    pause(0.5)
-    close
-end
+% figure
+% 
+% for i = 1:min(size(seq))
+%     figure
+%     plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
+%         outerBoundary(:,2),'black'),grid on
+%     axis equal
+%     hold on
+%     u_check                     =       seq(:,i);
+%     u = [u_T; u_check];
+%     [xi_1, ~, ~]                =       trajectory_generation(u, xi0, T_end, Ts);
+%     plot(xi_1(1,:), xi_1(2,:),'.');grid;
+%     title(i);
+%     pause(0.5)
+%     close
+% end
 
 %
 % dist = wp_to_trajectory_distance( waypoints, xi(1:2,:),n_wp,n_states);

@@ -8,7 +8,6 @@ clc
 path        =           pwd;
 addpath('Functions');
 addpath('Model');
-addpath('Mat_Data\');
 addpath('Functions\unc_optimization');
 addpath('Functions\con_optimization');
 addpath('Functions\track');
@@ -17,19 +16,13 @@ addpath('Functions\cost_function');
 
 %% track generation and waypoints positioning
 
-% choose which track to plot:
-% track_number = 1 -> CIRCLE TRACK
-% track_number = 2 -> OVAL TRACK
-% track_number = 3 -> RANDOM TRACK
-
-track_number = 2;
 [~,outerBoundary,innerBoundary,N,x0,y0] = track_generation(track_number);
 
 n_wp = 30;
 
 [ waypoints ] = waypoints_selector(innerBoundary,outerBoundary, n_wp,N);
 
-%% parameters initialization and setting of initial state
+%% initial state
 
 m = (outerBoundary(1,2)-innerBoundary(1,2))/(outerBoundary(1,1)-innerBoundary(1,1));
 m = -1/m;
@@ -42,14 +35,11 @@ psi     =       atan(m);    % yaw angle (rad)
 r       =       0;          % yaw rate (rad/s)
 xi0     =       [X Y Ux beta psi r]';
 
+%% tempi
 
-T_end   =       25;
-Ts_steer      =       1e-1;
-Ts_sim = 1e-2;
-
-u_0     =       [20;
-                 20;
-                 3/15*ones(T_end/Ts_steer,1)];
+T_end         =         25;
+Ts_steer      =         1e-1;
+Ts_sim        =         1e-2;
              
 %% cc
 
@@ -68,36 +58,48 @@ CC_dyn_d                                =   c2d(CC_dyn, Ts_sim, 'tustin');
 
 %% Optimization
 
+% u_opt = [20; 20; u_opt];
+% u_opt(62:end) = 0.5/15;
+% u_0 = u_opt;
 
-u_opt = [20; 20; u_opt];
-u_opt(62:end) = 0.5/15;
-u_0 = u_opt;
 
-%%
+% caricare da step_1
+u_opt(68:end) = 0.5/15;
+u_0 = [20; 15; u_opt];
+
+%% unconstrained optimization
+
 tic
 [u_opt,~,debug] = uncons_NLP_opt(@(u)(cost_function_gamma(u,xi0,T_end,Ts_steer,waypoints,n_wp,20,1e6)),u_0,unc_optimalset);
 unc_time = toc
                            
-%% optimal trajectory plot
+%% trajectory plot
 
-[xi, t_vec, ~ ,torque]    = trajectory_generation_cc(u_0, xi0, T_end, 0.1,1e-2);
-
-figure('Name', 'Optimal Trajectory', 'NumberTitle', 'off')
-plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
-    outerBoundary(:,2),'black'),grid on
-axis equal
+[xi_ini, t_vec, ~ ,torque]    = trajectory_generation_cc(u_0, xi0, T_end, 0.1,1e-2);
+[xi, ~, ~, ~] = trajectory_generation_cc(u_opt, xi0, T_end, 0.1,1e-2);
+figure('Name', 'Trajectory', 'NumberTitle', 'off')
+% subplot 211
+plot(   innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
+        outerBoundary(:,2),'black'),grid on, axis equal, hold on
+plot(xi_ini(1,:),xi_ini(2,:),'.blue')
 hold on
-plot(xi(1,:),xi(2,:),'.g')
+plot(xi(1,:),xi(2,:),'.r')
 hold off
 
-figure('Name', 'Torque', 'NumberTitle', 'off')
-plot(t_vec(1:end-1),torque);grid;title('Torque/s [Nm/s]');
+% subplot 212
+% plot(   innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
+%         outerBoundary(:,2),'black'),grid on, axis equal, hold on
+% plot(xi(1,:),xi(2,:),'.r')
+% hold off
 
-figure('Name', 'Optimal Trajectory', 'NumberTitle', 'off')
+figure('Name', 'CC', 'NumberTitle', 'off')
+subplot 211
+plot(t_vec(1:end-1),torque);grid;title('Torque/s [Nm/s]');
+subplot 212
 plot(t_vec,xi(3,:));grid;title('Speed  [Nm/s]');
 
 
-%% sequence
+%% sequence plot
 
 sequence = debug.seq;
 figure('Name', 'Sequence', 'NumberTitle', 'off')
@@ -121,37 +123,6 @@ for j = 1:count
     
 end
 
-hold off
-%%
-
-% test cost function
-% caricato da Mat_Data
-u_opt(68:end) = 0.5/15;
-
-u_0 = [20; 15; u_opt];
-
-%%
-
-[xi, t_vec, exitflag, torque] =  trajectory_generation_cc(u_0, xi0, T_end, Ts_steer, Ts_sim);
-
-[cost, point] = cost_function_gamma(u_0, xi0, T_end, Ts_steer, waypoints, n_wp, 5, 1e7);
-disp('ok')
-
-%%
-
-figure('Name', 'Optimal Trajectory', 'NumberTitle', 'off')
-plot(innerBoundary(:,1),innerBoundary(:,2),'black',outerBoundary(:,1),...
-    outerBoundary(:,2),'black'),grid on
-axis equal
-hold on
-plot(xi(1,:),xi(2,:))
-hold on
-for ind = 1:n_wp
-    plot(xi(1,point(ind)),xi(2,point(ind)), '*r');
-    hold on
-    txt = {ind};
-    text(xi(1,point(ind)),xi(2,point(ind)),txt);
-end
 hold off
 
 
