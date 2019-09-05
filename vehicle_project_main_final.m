@@ -33,8 +33,8 @@ myoptions.tolx          =	1e-16;
 myoptions.ls_beta       =	0.8;
 myoptions.ls_c          =	.1;
 myoptions.ls_nitermax   =	1e2*3;
-myoptions.nitermax      =	500;
-myoptions.xsequence     =	'on';
+myoptions.nitermax      =	50;
+myoptions.xsequence     =	'on';   
 
 % (fun,x0,A,b,C,d,p,q,con_options,filename)
 
@@ -43,13 +43,21 @@ myoptions.xsequence     =	'on';
 %                              0.1;
 %                              3/15*ones(T_end/Ts,1)];
 
-u_0                       =    [u_0(1:2);
-                                0.1;
-                                u_0(3:end);];
+% u_0                       =    [u_0(1:2);
+%                                 0.1;
+%                                 u_0(3:end);];
+
+u_0_2                   =   zeros(n_iterations+3,1);
+u_0_2(1:length(u_0))    =   u_0;
+u_0_2(length(u_0)+1:end)=   u_0(end);
+
+u_0                     =   u_0_2;
+
+clear u_0_2
                          
 %% Initial Setting visualization
 
-[xi_0,~,~,~]   =   trajectory_generation_cc(u_0, xi0, T_end, Ts,1e-2);
+[xi_0,~,~,~]              =    trajectory_generation_cc(u_0, xi0, T_end, Ts,1e-2);
 
 
 figure('Name','Initial_Guess')
@@ -62,14 +70,20 @@ plot(xi_0(1,:),xi_0(2,:))
 %% optimization
 
 p                       =   0;          %# of nonlinear equality constraints
-q                       =   5+2500/10;  %# of nonlinear inequality constraints
+q                       =   5+2600/10;  %# of nonlinear inequality constraints
 % q                       =   2;
 
 tic
 
+C = zeros(1,length(u_0));
+
+C(3) = 1;
+
+D = 0;
+
 [u_opt,~,~,exit,seq]    =   con_NLP_opt(@(u)( fun(u,xi0, T_end, Ts, ...
                             waypoints, n_wp , innerBoundary, outerBoundary,6)),...
-                            u_0,[],[],[],[],p,q,myoptions,"con_iterations");
+                            u_0,[],[],C,D,p,q,myoptions,"con_iterations");
 
 con_time                =   toc;
 

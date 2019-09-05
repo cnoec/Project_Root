@@ -31,7 +31,7 @@ end
 r                   =       0;          % yaw rate (rad/s)
 xi0                 =       [X Y Ux beta psi r]';
 
-T_end               =       25;
+T_end               =       26;
 Ts                  =       1e-1;
 Ts_sim              =       1e-2;
 n_iterations        =       T_end/Ts;

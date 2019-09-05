@@ -10,7 +10,7 @@ n_states    =   T_end/Ts_sim;
 
 gamma       =   u(3);
 
-F           =   (F + gamma^2)/1e6;
+F           =   (F + gamma*1e3)/1e6;
 
 % h = track_constraint(xi,inner_boundary,outer_boundary,length(xi),road_width);
 
@@ -36,7 +36,7 @@ h           =       [h_soft;
 
 % h           =       track_constraint(xi,inner_boundary,outer_boundary,n_states,road_width);
 
-h           =       h/1e4;
+h           =       h/1e6;
 
 g           =       [];
 

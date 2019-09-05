@@ -40,6 +40,12 @@ for i = 1:10:n_states
 
    j = j+1;
    
+   if (j == length(innerBoundary))
+       
+       return;
+       
+   end
+   
 end
 
 end
