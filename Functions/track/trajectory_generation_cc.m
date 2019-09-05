@@ -30,9 +30,9 @@ N = length(t_vec);
 downsampling = Ts_steer/Ts_sim;
 n_ref = 2;
 
-if (length(u) ~= n_ref+N)
-    n_ref = n_ref + 1;
-end
+% if (length(u) ~= n_ref+N)
+%     n_ref = n_ref + 1;
+% end
 
 for ind=1:(T_end/Ts_steer)
     steer(((ind-1)*downsampling+1):ind*downsampling) = u(n_ref+ind);

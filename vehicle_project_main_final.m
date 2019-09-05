@@ -15,7 +15,7 @@ addpath('Functions\cost_function');
 %% Run the initialization
 
 %run('vehicle_project_UNCONSTRAINED.m');
-load('310819_uopt_2.mat');
+load('310819_uopt.mat');
 
 u_0                     =   u_opt;
 clear u_opt
